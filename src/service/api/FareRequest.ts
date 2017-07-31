@@ -1,6 +1,6 @@
 import {LocalDate} from "js-joda";
 import {Option} from "ts-option";
-import PassengerSet from "../../passenger/PassengerSet";
+import {PassengerSet} from "../../passenger/PassengerSet";
 import {TicketType} from "../../tickettype/TicketType";
 import {Location} from "../../location/Location";
 

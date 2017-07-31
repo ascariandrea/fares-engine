@@ -7,7 +7,7 @@ import {DayOfWeek} from "js-joda";
 /**
  * Loads validity types from a MySQL compatible database
  */
-export default class ValidityTypeRepository {
+export class ValidityTypeRepository {
 
   constructor(
     private readonly db

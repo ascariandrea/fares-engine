@@ -1,11 +1,11 @@
 import {Fare, Price} from "../../src/fare/Fare";
-import {default as Status, StatusCode} from "../../src/passenger/Status";
-import Railcard from "../../src/passenger/Railcard";
+import {Status, StatusCode} from "../../src/passenger/Status";
+import {Railcard} from "../../src/passenger/Railcard";
 import {publicRailcard} from "../passenger/Railcard.spec";
-import Route from "../../src/route/Route";
+import {Route} from "../../src/route/Route";
 import {TicketType} from "../../src/tickettype/TicketType";
 import {none, option} from "ts-option";
-import RestrictionDate, {CurrentFuture} from "../../src/restriction/RestrictionDate";
+import {RestrictionDate, CurrentFutureMarker} from "../../src/restriction/RestrictionDate";
 import {LocalDate, LocalTime} from "js-joda";
 import {
   Restriction,
@@ -64,7 +64,7 @@ export const route = new Route("00101", "NotMGT", [], ["MGT"]);
 const restrictionDate = new RestrictionDate(
   LocalDate.parse("2016-12-13"),
   LocalDate.parse("2017-12-13"),
-  CurrentFuture.CURRENT,
+  CurrentFutureMarker.Current,
   true,
   true,
   true,

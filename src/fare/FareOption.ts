@@ -1,12 +1,12 @@
 
 import {Fare} from "./Fare";
 import memoize = require("memoized-class-decorator");
-import Railcard from "../passenger/Railcard";
+import {Railcard} from "../passenger/Railcard";
 
 /**
  * A FareOption is a group of fares that satisfies a passenger sets requirement to travel.
  */
-export default class FareOption {
+export class FareOption {
 
   constructor(
     public readonly fares: FareUse[]

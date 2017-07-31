@@ -1,6 +1,6 @@
 
-import Railcard from "./Railcard";
-import Status from "./Status";
+import {Railcard} from "./Railcard";
+import {Status} from "./Status";
 import {Fare} from "../fare/Fare";
 import memoize = require("memoized-class-decorator");
 import {RailcardMap} from "./repository/RailcardRepository";
@@ -9,7 +9,7 @@ import {groupBy, indexBy} from "..//util/array";
 /**
  * A set of passengers and railcards they hold
  */
-export default class PassengerSet {
+export class PassengerSet {
 
   constructor(
     public readonly numAdults,

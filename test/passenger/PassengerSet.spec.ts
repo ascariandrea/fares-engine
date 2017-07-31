@@ -1,8 +1,8 @@
 import * as chai from "chai";
 import {getStatus} from "./Status.spec";
-import Railcard from "../../src/passenger/Railcard";
+import {Railcard} from "../../src/passenger/Railcard";
 import {none, some} from "ts-option";
-import PassengerSet from "../../src/passenger/PassengerSet";
+import {PassengerSet} from "../../src/passenger/PassengerSet";
 import {fare} from "../fare/FareMockUtils";
 
 describe("PassengerSet", () => {

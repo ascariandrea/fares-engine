@@ -1,5 +1,5 @@
 
-abstract class Config {
+export abstract class Config {
 
   public koaPort = 8001;
   public prettyLogs = true;
@@ -12,5 +12,3 @@ abstract class Config {
   }
 
 }
-
-export default Config;

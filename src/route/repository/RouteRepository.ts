@@ -1,11 +1,11 @@
 
-import Route, {RouteCode} from "../Route";
+import {Route, RouteCode} from "../Route";
 import {indexBy} from "../../util/array";
 
 /**
  * Loads routes from a MySQL compatible database
  */
-export default class RouteRepository {
+export class RouteRepository {
 
   constructor(
     private readonly db

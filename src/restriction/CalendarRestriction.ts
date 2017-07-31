@@ -4,12 +4,12 @@ import {Option} from "ts-option";
 import {RouteCode} from "../route/Route";
 import {LocalDate} from "js-joda";
 import {Fare} from "../fare/Fare";
-import RestrictionDate from "./RestrictionDate";
+import {RestrictionDate} from "./RestrictionDate";
 
 /**
  * A calendar restriction restricts the use of a ticket type and route between a date range
  */
-export default class CalendarRestriction {
+export class CalendarRestriction {
 
   constructor(
     public readonly ticketCode: TicketCode,

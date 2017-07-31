@@ -12,10 +12,10 @@ import {RestrictionCode} from "../../restriction/Restriction";
 import Bluebird = require("bluebird");
 import {RailcardMap} from "../../passenger/repository/RailcardRepository";
 import {NLCMap} from "../../location/repository/LocationRepository";
-import PassengerSet from "../../passenger/PassengerSet";
-import Railcard, {RailcardCode} from "../../passenger/Railcard";
+import {PassengerSet} from "../../passenger/PassengerSet";
+import {Railcard, RailcardCode} from "../../passenger/Railcard";
 
-export default class NonDerivableFareRepository {
+export class NonDerivableFareRepository {
 
   constructor(
     private readonly db,

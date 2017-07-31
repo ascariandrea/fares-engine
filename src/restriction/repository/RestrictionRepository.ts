@@ -6,13 +6,16 @@ import {
 
 import {LocalDate, LocalTime} from "js-joda";
 import {option} from "ts-option";
-import CalendarRestriction from "../CalendarRestriction";
+import {CalendarRestriction} from "../CalendarRestriction";
 import {TicketCode} from "../../tickettype/TicketType";
 import {RouteCode} from "../../route/Route";
-import RestrictionDate, {CurrentFuture, CurrentFutureMarker} from "../RestrictionDate";
+import {RestrictionDate, CurrentFutureMarker} from "../RestrictionDate";
 import {indexBy} from "../../util/array";
 
-export default class RestrictionRepository {
+/**
+ * Provide access to the restrictions
+ */
+export class RestrictionRepository {
 
   constructor(
     private readonly db
@@ -31,8 +34,8 @@ export default class RestrictionRepository {
   private createRestriction = async(header: RestrictionHeaderRow) => {
     const [dates, current, future] = await Promise.all([
       this.getRestrictionHeaderDates(header.restriction_code),
-      this.getRestrictionRules(header, CurrentFuture.CURRENT),
-      this.getRestrictionRules(header, CurrentFuture.FUTURE)
+      this.getRestrictionRules(header, CurrentFutureMarker.Current),
+      this.getRestrictionRules(header, CurrentFutureMarker.Future)
     ]);
 
     return new Restriction(header.restriction_code, dates, current, future);
@@ -46,8 +49,8 @@ export default class RestrictionRepository {
 
   private async getRestrictionRules(header, cfMkr: CurrentFutureMarker): Promise<RestrictionRules> {
     const [out, ret] = await Promise.all([
-      this.getDirection(header, cfMkr, Dir.OUTWARD),
-      this.getDirection(header, cfMkr, Dir.RETURN)
+      this.getDirection(header, cfMkr, Direction.Outward),
+      this.getDirection(header, cfMkr, Direction.Return)
     ]);
 
     return new RestrictionRules(out, ret);
@@ -67,8 +70,8 @@ export default class RestrictionRepository {
       .query("SELECT * FROM restriction_train WHERE restriction_code = ? AND cf_mkr = ? AND out_ret = ?", [header.restriction_code, cfMkr, direction]);
 
     const services = rows.map(row => row.train_no);
-    const type = direction === Dir.OUTWARD ? header.type_out : header.type_ret;
-    const [restrictions, easements] = type === RestrictionType.EASED ? [[], services] : [services, []];
+    const type = direction === Direction.Outward ? header.type_out : header.type_ret;
+    const [restrictions, easements] = type === ServiceRestrictionType.Eased ? [[], services] : [services, []];
 
     return new ServiceRestriction(restrictions, easements);
   }
@@ -141,8 +144,10 @@ export type RestrictionMap = {
   [restrictionCode: string]: Restriction;
 }
 
-type Direction = "O" | "R";
-const Dir = { OUTWARD: <Direction>"O", RETURN: <Direction>"R" };
+enum Direction {
+  Outward = "O",
+  Return = "R"
+}
 
 interface RestrictionHeaderRow {
   restriction_code: RestrictionCode;
@@ -150,8 +155,10 @@ interface RestrictionHeaderRow {
   type_ret: ServiceRestrictionType
 }
 
-const RestrictionType = { EASED: "N", RESTRICTED: "P"};
-type ServiceRestrictionType = "N" | "P";
+enum ServiceRestrictionType {
+  Eased = "N",
+  Restricted = "P"
+}
 
 interface TimeRestrictionRow {
   time_from: string;

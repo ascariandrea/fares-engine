@@ -1,22 +1,22 @@
-import Config from "../../config/common";
+import {Config} from "../../config/common";
 import {DevConfig} from "../../config/dev";
-import KoaService from "./KoaService";
+import {KoaService} from "./KoaService";
 import {ProductionConfig} from "../../config/production";
 import memoize = require("memoized-class-decorator");
 import Pino = require("pino");
-import RestrictionRepository from "../../../fares-engine/src/restriction/repository/RestrictionRepository";
-import RailcardRepository from "../../../fares-engine/src/passenger/repository/RailcardRepository";
-import LocationRepository from "../../../fares-engine/src/location/repository/LocationRepository";
-import ValidityTypeRepository from "../../../fares-engine/src/validitytype/repository/ValidityTypeRepository";
-import TicketTypeRepository from "../../../fares-engine/src/tickettype/repository/TicketTypeRepository";
-import RouteRepository from "../../../fares-engine/src/route/repository/RouteRepository";
-import NonDerivableFareRepository from "../../../fares-engine/src/fare/repository/NonDerivableFareRepository";
-import FlowFareRepository from "../../../fares-engine/src/fare/repository/FlowFareRepository";
-import Railcard from "../../../fares-engine/src/passenger/Railcard";
+import {RestrictionRepository} from "../restriction/repository/RestrictionRepository";
+import {RailcardRepository} from "../passenger/repository/RailcardRepository";
+import {LocationRepository} from "../location/repository/LocationRepository";
+import {ValidityTypeRepository} from "../validitytype/repository/ValidityTypeRepository";
+import {TicketTypeRepository} from "../tickettype/repository/TicketTypeRepository";
+import {RouteRepository} from "../route/repository/RouteRepository";
+import {NonDerivableFareRepository} from "../fare/repository/NonDerivableFareRepository";
+import {FlowFareRepository} from "../fare/repository/FlowFareRepository";
+import {Railcard} from "../passenger/Railcard";
 import {FareService} from "../fare/FareService";
 import {FareResponseFactory} from "./api/FareResponse";
 
-export default class Container {
+export class Container {
 
   @memoize
   public async getKoaService(): Promise<KoaService> {

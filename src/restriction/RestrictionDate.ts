@@ -4,7 +4,7 @@ import {LocalDate} from "js-joda";
 /**
  * Date validity for restriction records
  */
-export default class RestrictionDate {
+export class RestrictionDate {
 
   constructor(
     private readonly startDate: LocalDate,
@@ -28,5 +28,10 @@ export default class RestrictionDate {
 
 }
 
-export type CurrentFutureMarker = "C" | "F";
-export const CurrentFuture = { CURRENT: <CurrentFutureMarker>"C", FUTURE: <CurrentFutureMarker>"F" };
+/**
+ * Determines whether the restriction is part of the current or future set
+ */
+export enum CurrentFutureMarker {
+  Current = "C",
+  Future = "F"
+}

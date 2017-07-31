@@ -1,5 +1,5 @@
 
-import Config from "./common";
+import {Config} from "./common";
 
 export class ProductionConfig extends Config {
 

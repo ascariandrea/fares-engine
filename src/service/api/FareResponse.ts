@@ -2,7 +2,7 @@
 import {FareServiceResponse} from "../../fare/FareService";
 import {Restriction} from "../../restriction/Restriction";
 import {TicketType} from "../../tickettype/TicketType";
-import Route from "../../route/Route";
+import {Route} from "../../route/Route";
 import {Fare} from "../../fare/Fare";
 
 /**

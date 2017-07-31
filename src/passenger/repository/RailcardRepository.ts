@@ -1,6 +1,6 @@
 
-import Railcard, {MinimumFare, RailcardCode} from "../Railcard";
-import Status from "../Status";
+import {Railcard, MinimumFare, RailcardCode} from "../Railcard";
+import {Status} from "../Status";
 import {StatusMap} from "../Status";
 import {option} from "ts-option";
 import {RailcardBan} from "../Railcard";
@@ -13,7 +13,10 @@ import {RouteCode} from "../../route/Route";
 import {CRS} from "../../location/Location";
 import {RestrictionMap} from "../../restriction/repository/RestrictionRepository";
 
-export default class RailcardRepository {
+/**
+ * Provide access to railcards
+ */
+export class RailcardRepository {
 
   constructor(
     private readonly db,

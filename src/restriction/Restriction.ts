@@ -2,7 +2,7 @@
 import {LocalDate, LocalTime} from "js-joda";
 import {Option, option} from "ts-option";
 import {CRS} from "../location/Location";
-import RestrictionDate, {CurrentFuture} from "./RestrictionDate";
+import {RestrictionDate, CurrentFutureMarker} from "./RestrictionDate";
 import {Operator} from "../fare/Fare";
 
 
@@ -36,7 +36,7 @@ export class Restriction {
   public get(date: LocalDate): Option<RestrictionRules> {
     const header = this.dates.find(h => h.matches(date));
 
-    return option(header).map(d => d && d.cfMkr === CurrentFuture.CURRENT ? this.current : this.future);
+    return option(header).map(d => d && d.cfMkr === CurrentFutureMarker.Current ? this.current : this.future);
   }
 
 }

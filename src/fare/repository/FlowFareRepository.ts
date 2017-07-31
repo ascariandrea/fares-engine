@@ -9,12 +9,15 @@ import {TicketCode} from "../../tickettype/TicketType";
 import {RouteCode} from "../../route/Route";
 import {RouteMap} from "../../route/repository/RouteRepository";
 import {RestrictionCode} from "../../restriction/Restriction";
-import Railcard from "../../passenger/Railcard";
+import {Railcard} from "../../passenger/Railcard";
 import {NLCMap} from "../../location/repository/LocationRepository";
-import PassengerSet from "../../passenger/PassengerSet";
-import Status from "../../passenger/Status";
+import {PassengerSet} from "../../passenger/PassengerSet";
+import {Status} from "../../passenger/Status";
 
-export default class FlowFareRepository {
+/**
+ * Provide access to the flow fares
+ */
+export class FlowFareRepository {
 
   constructor(
     private readonly db,

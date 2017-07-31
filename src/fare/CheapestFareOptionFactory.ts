@@ -1,11 +1,11 @@
 
 import {Fare} from "./Fare";
-import FareOption, {FareUse} from "./FareOption";
 import {none, Option, some} from "ts-option";
-import PassengerSet from "../passenger/PassengerSet";
-import Railcard from "../passenger/Railcard";
-import Status from "../passenger/Status";
+import {PassengerSet} from "../passenger/PassengerSet";
+import {Railcard} from "../passenger/Railcard";
+import {Status} from "../passenger/Status";
 import {RailcardMap} from "../passenger/repository/RailcardRepository";
+import {FareOption, FareUse} from "./FareOption";
 
 /**
  * One trick pony that creates FareOptions

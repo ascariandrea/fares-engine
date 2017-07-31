@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import Railcard, {MinimumFare, RailcardBan} from "../../src/passenger/Railcard";
+import {Railcard, MinimumFare, RailcardBan} from "../../src/passenger/Railcard";
 import {none, some} from "ts-option";
 import {LocalDate} from "js-joda";
 import {Location} from "../../src/location/Location";

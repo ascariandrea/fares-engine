@@ -1,15 +1,16 @@
-import FlowFareRepository from "./repository/FlowFareRepository";
-import NonDerivableFareRepository from "./repository/NonDerivableFareRepository";
+import {FlowFareRepository} from "./repository/FlowFareRepository";
+import {NonDerivableFareRepository} from "./repository/NonDerivableFareRepository";
 import {LocalDate} from "js-joda";
 import {Fare} from "./Fare";
 import {CalendarRestrictionMap} from "../restriction/repository/RestrictionRepository";
-import PassengerSet from "../passenger/PassengerSet";
+import {PassengerSet} from "../passenger/PassengerSet";
 import {Location} from "../location/Location";
 import {FarePreferences, FareRequest} from "../service/api/FareRequest";
 
-// TODO unit test the calendar restrictions, railcard restrictions and fare preferences
 /**
  * Service that uses a FlowRepository and NonDerivableFareRepository to return fares using the local database.
+ *
+ * TODO unit test the calendar restrictions, railcard restrictions and fare preferences
  */
 export class FareService {
 
@@ -122,6 +123,9 @@ interface PartitionedFares {
   seasons: Fare[]
 }
 
+/**
+ * Container for Fare Service query results
+ */
 export class FareServiceResponse {
 
   constructor(

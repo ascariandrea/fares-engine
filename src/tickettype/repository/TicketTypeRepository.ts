@@ -8,7 +8,7 @@ import {DiscountCategory} from "../../passenger/Status";
 /**
  * Loads ticket types from a MySQL compatible database
  */
-export default class TicketTypeRepository {
+export class TicketTypeRepository {
 
   constructor(
     private readonly db,
@@ -36,10 +36,10 @@ export default class TicketTypeRepository {
       row.min_passengers,
       row.max_passengers,
       this.validityTypes[row.validity_code],
-      row.tkt_type === Direction.RETURN,
-      row.tkt_type === Direction.SEASON,
-      row.reservation_required !== ReservationType.NOT_REQUIRED,
-      row.tkt_class === Class.FIRST,
+      row.tkt_type === Direction.Return,
+      row.tkt_type === Direction.Season,
+      row.reservation_required !== ReservationType.NotRequired,
+      row.tkt_class === Class.First,
       row.discount_category
     );
   }
@@ -58,30 +58,30 @@ interface TicketTypeRow {
   max_children: number;
   min_passengers: number;
   max_passengers: number;
-  tkt_type: string;
-  tkt_class: number;
+  tkt_type: Direction;
+  tkt_class: Class;
   validity_code: ValidityCode;
-  reservation_required: string;
+  reservation_required: ReservationType;
   discount_category: DiscountCategory;
 }
 
-const Direction = {
-  SINGLE: "S",
-  RETURN: "R",
-  SEASON: "N"
-};
+enum Direction {
+  Single = "S",
+  Return = "R",
+  Season = "N"
+}
 
-const ReservationType = {
-  REQUIRED: "Y",
-  NOT_REQUIRED: "N",
-  REQUIRED_OUTWARD: "O",
-  REQUIRED_RETURN: "R",
-  REQUIRED_EITHER: "E",
-  REQUIRED_BOTH: "B"
-};
+enum ReservationType {
+  Required = "Y",
+  NotRequired = "N",
+  RequiredOutward = "O",
+  RequiredReturn = "R",
+  RequiredEither = "E",
+  RequiredBoth = "B"
+}
 
-const Class = {
-  FIRST: 1,
-  STANDARD: 2,
-  OTHER: 9
-};
+enum Class {
+  First = 1,
+  Standard = 2,
+  Other = 9
+}

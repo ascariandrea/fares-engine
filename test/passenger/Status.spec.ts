@@ -1,8 +1,8 @@
 import * as chai from "chai";
 import {Fare} from "../../src/fare/Fare";
-import Status, {StatusCode} from "../../src/passenger/Status";
+import {Status, StatusCode} from "../../src/passenger/Status";
 import {none} from "ts-option";
-import Route from "../../src/route/Route";
+import {Route} from "../../src/route/Route";
 import {publicRailcard} from "./Railcard.spec";
 import {LocalDate} from "js-joda";
 import {Location} from "../../src/location/Location";

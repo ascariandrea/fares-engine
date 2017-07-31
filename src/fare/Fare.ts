@@ -1,11 +1,11 @@
 
-import Route from "../route/Route";
+import {Route} from "../route/Route";
 import {TicketType} from "../tickettype/TicketType";
 import {Option} from "ts-option";
 import {Restriction} from "../restriction/Restriction";
 import memoize = require("memoized-class-decorator");
 import {StatusCode} from "../passenger/Status";
-import Railcard from "../passenger/Railcard";
+import {Railcard} from "../passenger/Railcard";
 import {Location} from "../location/Location";
 
 /**

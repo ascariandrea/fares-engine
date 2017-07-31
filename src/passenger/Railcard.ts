@@ -13,7 +13,7 @@ import memoize = require("memoized-class-decorator");
 /**
  * A railcard is a type of status discount that can be applied to a fare to reduce the price.
  */
-export default class Railcard {
+export class Railcard {
 
   static readonly PUBLIC_RAILCARD_CODE = "";
   static readonly GROUPSAVE_RAILCARD_CODE = "GS3";

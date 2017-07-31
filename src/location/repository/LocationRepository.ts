@@ -4,24 +4,33 @@ import {NLC, Location, ClusterMap} from "../Location";
 import {option} from "ts-option";
 import {indexBy} from "../../util/array";
 
-export default class LocationRepository {
+export class LocationRepository {
 
   constructor(
     private readonly db
   ) {}
 
+  /**
+   * Load the stations from the database then index them by their NLC
+   */
   public async getLocationsByNLC(): Promise<NLCMap> {
     const locations = await this.getLocations();
 
     return locations.reduce(indexBy((loc: Location) => loc.nlc), {});
   }
 
+  /**
+   * Load the stations from the database then index them by their CRS code
+   */
   public async getLocationsByCRS(): Promise<CRSMap> {
     const locations = await this.getLocations();
 
     return locations.reduce(indexBy((loc: Location) => loc.crs.orNull), {});
   }
 
+  /**
+   * Load all locations from the database
+   */
   @memoize
   private async getLocations(): Promise<Location[]> {
     return this.db

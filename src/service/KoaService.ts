@@ -4,15 +4,18 @@ import compress = require("koa-compress");
 import Context = Koa.Context;
 import {LocalDate} from "js-joda";
 import {None, Some} from "ts-option";
-import Railcard from "../../../fares-engine/src/passenger/Railcard";
+import {Railcard} from "../passenger/Railcard";
 import {FareService} from "../fare/FareService";
 import {CRSMap, NLCMap} from "../location/repository/LocationRepository";
 import {RailcardMap} from "../passenger/repository/RailcardRepository";
-import PassengerSet from "../passenger/PassengerSet";
+import {PassengerSet} from "../passenger/PassengerSet";
 import {FareResponseFactory} from "./api/FareResponse";
 import {FarePreferences, FareRequest} from "./api/FareRequest";
 
-export default class KoaService {
+/**
+ * Koa based web server
+ */
+export class KoaService {
 
   constructor(
     private readonly fareService: FareService,
@@ -33,7 +36,6 @@ export default class KoaService {
     app.use(this.handler.bind(this));
     app.listen(this.koaPort);
   }
-
 
   /**
    * Handle requests.

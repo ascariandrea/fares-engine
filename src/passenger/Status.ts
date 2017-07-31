@@ -1,5 +1,5 @@
 import {Fare, Price} from "../fare/Fare";
-import Railcard from "./Railcard";
+import {Railcard} from "./Railcard";
 import {LocalDate} from "js-joda";
 
 /**
@@ -10,7 +10,7 @@ export type StatusCode = string;
 /**
  * A status that can a passengers holds in order to get a discounted price
  */
-export default class Status {
+export class Status {
 
   static readonly ADULT_STATUS_CODE = "000";
   static readonly CHILD_STATUS_CODE = "001";

@@ -1,6 +1,6 @@
 import * as chai from "chai";
-import Status from "../../src/passenger/Status";
-import PassengerSet from "../../src/passenger/PassengerSet";
+import {Status} from "../../src/passenger/Status";
+import {PassengerSet} from "../../src/passenger/PassengerSet";
 import {dicRailcard, disRailcard, publicRailcard, yngRailcard} from "../passenger/Railcard.spec";
 import {CheapestFareOptionFactory} from "../../src/fare/CheapestFareOptionFactory";
 import {createFare} from "./FareMockUtils";

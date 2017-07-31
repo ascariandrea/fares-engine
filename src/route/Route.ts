@@ -14,7 +14,7 @@ export type RouteCode = string;
  *
  * A route may dictate that you go via or not via a particular station.
  */
-export default class Route {
+export class Route {
 
   constructor(
     public readonly code: RouteCode,
