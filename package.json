@@ -1,0 +1,54 @@
+{
+  "name": "gb-rail-fares",
+  "version": "1.0.0",
+  "description": "Library, API and user interface for calculating British rail fares",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "mocha --compilers ts:ts-node/register,tsx:ts-node/register 'test/**/*.spec.ts'",
+    "gtest": "mocha --compilers ts:ts-node/register,tsx:ts-node/register 'test/**/*.spec.ts' --grep",
+    "watch-test": "mocha -w --compilers ts:ts-node/register,tsx:ts-node/register 'test/**/*.spec.ts'",
+    "start": "ts-node ./src/start.ts",
+    "import": "ts-node ./src/import.ts",
+    "prepublishOnly": "tsc -p ./ --outDir dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/open-track/fares-engine.git"
+  },
+  "keywords": [
+    "gb",
+    "rail",
+    "fares",
+    "dtd"
+  ],
+  "author": "Linus Norton",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/open-track/fares-engine/issues"
+  },
+  "homepage": "https://github.com/open-track/fares-engine#readme",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "js-joda": "^1.5.4",
+    "koa": "^2.3.0",
+    "koa-compress": "^2.0.0",
+    "memoized-class-decorator": "^1.2.0",
+    "pino": "^4.7.1",
+    "promise-mysql": "^3.0.2",
+    "ts-option": "^1.1.4"
+  },
+  "engines": {
+    "node": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.8",
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^8.0.0",
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "ts-node": "^3.1.0",
+    "typescript": "^2.4.1"
+  }
+}
