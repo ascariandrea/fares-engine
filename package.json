@@ -1,9 +1,9 @@
 {
   "name": "gb-rail-fares",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Library, API and user interface for calculating British rail fares",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "scripts": {
     "test": "mocha --compilers ts:ts-node/register,tsx:ts-node/register 'test/**/*.spec.ts'",
     "gtest": "mocha --compilers ts:ts-node/register,tsx:ts-node/register 'test/**/*.spec.ts' --grep",
