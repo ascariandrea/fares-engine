@@ -1,7 +1,7 @@
 
 export abstract class Config {
 
-  public koaPort = 8001;
+  public koaPort = 8002;
   public prettyLogs = true;
 
   public database = {
