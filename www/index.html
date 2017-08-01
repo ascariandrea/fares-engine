@@ -3,8 +3,8 @@
 <head>
     <title>Fares service test interface</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="/resource/bootstrap.min.css">
-    <link rel="stylesheet" href="/resource/font-awesome.min.css">
+    <link rel="stylesheet" href="./resource/bootstrap.min.css">
+    <link rel="stylesheet" href="./resource/font-awesome.min.css">
     <style>
         .form-fares-search .field {
             float: left;
@@ -83,9 +83,9 @@
     <div id="results">Loading...</div>
 </div>
 
-<script src="/resource/tether.min.js"></script>
-<script src="/resource/jquery-3.1.0.min.js"></script>
-<script src="/resource/bootstrap.min.js"></script>
+<script src="./resource/tether.min.js"></script>
+<script src="./resource/jquery-3.1.0.min.js"></script>
+<script src="./resource/bootstrap.min.js"></script>
 <script>
     document.getElementById('date').valueAsDate = new Date();
     document.getElementById('returnDate').valueAsDate = new Date();
@@ -99,7 +99,7 @@
 
     function submitForm() {
         $(".fa-refresh").addClass("fa-spin");
-        const request = "/fares?" + $(".form-fares-search").serialize();
+        const request = "./fares?" + $(".form-fares-search").serialize();
         $.get(request).then(displayResults);
     }
 
