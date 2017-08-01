@@ -61,6 +61,7 @@ export class Container {
       locationsByCRS,
       locationsByNLC,
       railcards,
+      this.getLog(),
       this.getConfig().koaPort
     );
   }
@@ -92,7 +93,7 @@ export class Container {
   }
 
   @memoize
-  public getLog() {
+  public getLog(): Pino {
     return Pino({
       prettyPrint: this.getConfig().prettyLogs
     });

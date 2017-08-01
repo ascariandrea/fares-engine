@@ -1,7 +1,9 @@
 
 import Koa = require("koa");
 import compress = require("koa-compress");
+import serve = require('koa-static');
 import Context = Koa.Context;
+import Pino = require("pino");
 import {LocalDate} from "js-joda";
 import {None, Some} from "ts-option";
 import {Railcard} from "../passenger/Railcard";
@@ -23,6 +25,7 @@ export class KoaService {
     private readonly locationsByCRS: CRSMap,
     private readonly locationsByNLC: NLCMap,
     private readonly railcards: RailcardMap,
+    private readonly logger: Pino,
     private readonly koaPort: number
   ) { }
 
@@ -33,8 +36,22 @@ export class KoaService {
     const app = new Koa();
 
     app.use(compress());
+    app.use(this.requestLogger.bind(this));
+    app.use(serve("www/"));
     app.use(this.handler.bind(this));
     app.listen(this.koaPort);
+  }
+
+  /**
+   * Log the request info and response time
+   */
+  private async requestLogger(ctx: Context, next) {
+    const start = Date.now();
+    await next();
+    const ms = Date.now() - start;
+
+    this.logger.info(`${ctx.method} ${ctx.url} - ${ms}`);
+    ctx.set('X-Response-Time', `${ms}ms`);
   }
 
   /**

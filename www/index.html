@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Fares service test interface</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/resource/bootstrap.min.css">
+    <link rel="stylesheet" href="/resource/font-awesome.min.css">
+    <style>
+        .form-fares-search .field {
+            float: left;
+        }
+        .form-fares-search label {
+            display: block;
+            margin: 0;
+        }
+        .form-fares-search input, #date {
+            margin-right: 10px;
+        }
+        #origin, #destination, #adults, #children {
+            width: 90px;
+        }
+        #date {
+            height: 38px;
+            width: 180px;
+        }
+        body {
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #ffffff;
+            border-left: 1px solid #e0e0e0;
+            border-right: 1px solid #e0e0e0;
+        }
+        h1,h4 {
+            padding: 20px 0 10px 0;
+        }
+        #results td {
+            padding: 0.4rem;
+            width: 90px;
+        }
+        .fa-refresh {
+            margin: 35px 0 0 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Fares Look up</h1>
+    <form class="form-fares-search clearfix">
+        <div class="field">
+            <label for="origin">Origin</label>
+            <input class="form-control" id="origin"  maxlength="3" type="text" name="origin" placeholder="origin" value="EUS"/>
+        </div>
+        <div class="field">
+            <label for="destination">Destination</label>
+            <input class="form-control" id="destination" maxlength="3" type="text" name="destination" placeholder="destination" value="BHM"/>
+        </div>
+        <div class="field">
+            <label for="date">Outward</label>
+            <input class="form-control" id="date" type="date" name="outwardDate" placeholder="date"/>
+        </div>
+        <div class="field">
+            <label for="date">Return Date</label>
+            <input class="form-control" id="returnDate" type="date" name="returnDate" placeholder="date"/>
+        </div>
+        <div class="field">
+            <label for="adults">Adults</label>
+            <input class="form-control" id="adults" type="number" name="adults" placeholder="adults" value="2"/>
+        </div>
+        <div class="field">
+            <label for="children">Children</label>
+            <input class="form-control" id="children" type="number" name="children" placeholder="children" value="2"/>
+        </div>
+        <div class="field">
+            <label for="railcards">Railcards</label>
+            <input class="form-control" id="railcards" type="text" name="railcards" placeholder="railcards" value="YNG,YNG,DIS"/>
+        </div>
+        <div class="field">
+            <i class="fa fa-refresh"></i>
+        </div>
+    </form>
+    <div id="results">Loading...</div>
+</div>
+
+<script src="/resource/tether.min.js"></script>
+<script src="/resource/jquery-3.1.0.min.js"></script>
+<script src="/resource/bootstrap.min.js"></script>
+<script>
+    document.getElementById('date').valueAsDate = new Date();
+    document.getElementById('returnDate').valueAsDate = new Date();
+
+    const linkRenderers = {
+        "restriction": renderRestriction,
+        "ticket-type": renderTicketType,
+        "route": renderRoute,
+        "validity-type": renderValidityType
+    };
+
+    function submitForm() {
+        $(".fa-refresh").addClass("fa-spin");
+        const request = "/fares?" + $(".form-fares-search").serialize();
+        $.get(request).then(displayResults);
+    }
+
+    function displayResults(response) {
+        let html = renderFareType("Outward Singles", response.links, response.data.outwardSingles)
+                 + renderFareType("Return Singles", response.links, response.data.inwardSingles)
+                 + renderFareType("Return Tickets", response.links, response.data.returns);
+
+        for (const [type, links] of Object.entries(getGroupedLinks(response.links))) {
+            if (linkRenderers[type]) {
+                html += links.map(linkRenderers[type]).join("");
+            }
+        }
+
+        requestAnimationFrame(() => {
+            $("#results").html(html);
+            $(".fa-refresh").removeClass("fa-spin");
+        });
+    }
+
+    function getGroupedLinks(links) {
+        return Object.keys(links).reduce((prev, key) => {
+            const type = key.split("/")[1];
+
+            if (prev[type] === undefined) {
+                prev[type] = [links[key]];
+            }
+            else {
+                prev[type].push(links[key]);
+            }
+
+            return prev;
+        }, {});
+    }
+
+    function renderFareType(title, links, fares) {
+        const table = Object.keys(links)[0].indexOf("fare-option") > 0
+          ? fares.map(f => renderFareOption(links, f)).join("")
+          : renderFares(links, fares);
+
+        return `<h4>${title}</h4>` + table;
+    }
+
+    function renderFares(links, fares) {
+      const faresHTML = fares.map(f => renderFare(links, f)).join("");
+
+      return `
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <td>Ticket Name</td>
+                            <td>Railcard</td>
+                            <td>Origin</td>
+                            <td>Destination</td>
+                            <td>Route</td>
+                            <td>Ticket Type</td>
+                            <td>Status</td>
+                            <td>Price</td>
+                            <td>Restriction</td>
+                            <td>TOC</td>
+                            <td>xLondon</td>
+                        </tr>
+                    </thead>
+                    <tbody>${faresHTML}</tbody>
+                </table>
+            `;
+    }
+
+    function renderFare(links, fareUse) {
+      const fare = links[fareUse];
+      console.log(fare);
+      const ticketType = links[fare.ticketType];
+      const restriction = fare.restriction ? fare.restriction.split("/")[2] : "";
+
+      return `<tr>
+                    <td>${ticketType.name}</td>
+                    <td>${fare.railcard}</td>
+                    <td>${fare.origin}</td>
+                    <td>${fare.destination}</td>
+                    <td><a onclick="location.href='#${fare.route}'" href="#collapse-route-${fare.route.replace("/route/", "")}" data-toggle="collapse">${fare.route.replace("/route/", "")}</a>
+                    <td><a onclick="location.href='#${fare.ticketType}'" href="#collapse-ticket-type-${fare.ticketType.replace("/ticket-type/", "")}" data-toggle="collapse">${fare.ticketType.replace("/ticket-type/", "")}</a>
+                    <td>${fare.statusCode}</td>
+                    <td>&pound;${(fare.price / 100).toFixed(2)}</td>
+                    <td><a onclick="location.href='#${restriction}'" href="#collapse-restriction-${restriction}" data-toggle="collapse">${restriction}</a>
+                    <td>${fare.toc}</td>
+                    <td>${fare.xLondon}</td>
+                </tr>`;
+    }
+
+
+    function renderFareOption(links, fareOptionId) {
+        const fareOption = links[fareOptionId];
+        const title = fareOptionId.split("/")[2] + " (&pound;" + (fareOption.totalPrice / 100).toFixed(2) + ")";
+        const fares = fareOption.fares.map(f => renderFareUse(links, f)).join("");
+
+        return `
+                <h5>${title}</h5>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <td>Adults</td>
+                            <td>Children</td>
+                            <td>Railcard</td>
+                            <td>Origin</td>
+                            <td>Destination</td>
+                            <td>Route</td>
+                            <td>Ticket Type</td>
+                            <td>Status</td>
+                            <td>Price</td>
+                            <td>Restriction</td>
+                            <td>TOC</td>
+                            <td>xLondon</td>
+                        </tr>
+                    </thead>
+                    <tbody>${fares}</tbody>
+                </table>
+            `;
+    }
+
+    function renderFareUse(links, fareUse) {
+        const fare = links[fareUse.fare];
+        const restriction = fare.restriction ? fare.restriction.split("/")[2] : "";
+
+        return `<tr>
+                    <td>${fareUse.adults}</td>
+                    <td>${fareUse.children}</td>
+                    <td>${fare.railcard}</td>
+                    <td>${fare.origin}</td>
+                    <td>${fare.destination}</td>
+                    <td><a onclick="location.href='#${fare.route}'" href="#collapse-route-${fare.route.replace("/route/", "")}" data-toggle="collapse">${fare.route.replace("/route/", "")}</a>
+                    <td><a onclick="location.href='#${fare.ticketCode}'" href="#collapse-ticket-type-${fare.ticketCode.replace("/ticket-type/", "")}" data-toggle="collapse">${fare.ticketCode.replace("/ticket-type/", "")}</a>
+                    <td>${fare.statusCode}</td>
+                    <td>&pound;${(fare.price / 100).toFixed(2)}</td>
+                    <td><a onclick="location.href='#${restriction}'" href="#collapse-restriction-${restriction}" data-toggle="collapse">${restriction}</a>
+                    <td>${fare.toc}</td>
+                    <td>${fare.xLondon}</td>
+                </tr>`;
+    }
+
+    function renderRestriction(restriction) {
+        const out = renderRestrictionDirection(restriction.outward) || `Outward restriction does not apply on ${restriction.outwardDate}`;
+        const ret = restriction.returnDate ? renderRestrictionDirection(restriction.return) || `Return restriction does not apply on ${restriction.returnDate}` : "";
+
+        return `
+                <b>
+                    <a name="${restriction.code}">Restriction ${restriction.code}</a>
+                    (<a href="#collapse-restriction-${restriction.code}" data-toggle="collapse">details</a>)
+                </b><br/>
+                <div class="collapse" id="collapse-restriction-${restriction.code}">
+                    <div class="clearfix">
+                        <div class="col-md-6" ><p><b>Outward</b></p>${out}</div>
+                        <div class="col-md-6 clearfix" ><p><b>Return</b></p>${ret}</div>
+                    </div>
+                    <br/>
+               </div>
+        `;
+    }
+
+    function renderRestrictionDirection(direction) {
+        const easements = direction.service.easements.length > 0 ? 'Except for services ' + direction.service.easements.join(', ') : '';
+        const restrictions = direction.service.restrictions.length > 0 ? 'Cannot travel on services ' + direction.service.restrictions.join(', ') : '';
+
+        return direction.arrive.map(r => renderTimeRestriction(r, 'arrive')).join('')
+          + direction.depart.map(r => renderTimeRestriction(r, 'depart')).join('')
+          + direction.via.map(r => renderTimeRestriction(r, 'go via')).join('')
+          + restrictions
+          + easements;
+    }
+
+    function renderTimeRestriction(timeRestriction, context) {
+        const location = timeRestriction.location !== null ? " at " + timeRestriction.location : "";
+        const toc = timeRestriction.toc || "all";
+
+        return `Cannot ${context}${location} between ${timeRestriction.from} and ${timeRestriction.to} on ${toc} services.<br/>`;
+    }
+
+    function renderTicketType(ticketType) {
+        const rows = Object.entries(ticketType).map(([key, value]) => `<tr><td>${key}</td><td>${value}</td></tr>`);
+
+        return `
+            <b>
+                <a name="/ticket-type/${ticketType.code}">Ticket Type ${ticketType.code}</a>
+                (<a href="#collapse-ticket-type-${ticketType.code}" data-toggle="collapse">details</a>)
+            </b><br/>
+            <div class="collapse" id="collapse-ticket-type-${ticketType.code}">
+                <table class="table table-striped table-bordered">
+                    ${rows.join("")}
+                </table>
+            </div>
+        `;
+    }
+
+    function renderRoute(route) {
+        const rows = Object.entries(route).map(([key, value]) => `<tr><td>${key}</td><td>${value}</td></tr>`);
+
+        return `
+            <b>
+                <a name="/route/${route.code}">Route ${route.code}</a>
+                (<a href="#collapse-route-${route.code}" data-toggle="collapse">details</a>)
+            </b><br/>
+            <div class="collapse" id="collapse-route-${route.code}">
+                <table class="table table-striped table-bordered">
+                    ${rows.join("")}
+                </table>
+            </div>
+        `;
+    }
+
+    function renderValidityType(validityType) {
+        const rows = Object.entries(validityType).map(([key, value]) => `<tr><td>${key}</td><td>${value}</td></tr>`);
+
+        return `
+            <b>
+                <a name="/validity-type/${validityType.code}">Validity Code ${validityType.code}</a>
+                (<a href="#collapse-route-${validityType.code}" data-toggle="collapse">details</a>)
+            </b><br/>
+            <div class="collapse" id="collapse-route-${validityType.code}">
+                <table class="table table-striped table-bordered">
+                    ${rows.join("")}
+                </table>
+            </div>
+        `;
+
+    }
+
+
+    $(".form-fares-search").on("change", "input", submitForm);
+    submitForm();
+</script>
+</body>
+</html>

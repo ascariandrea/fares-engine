@@ -9,7 +9,7 @@ import {Fare} from "../../fare/Fare";
  * Definition of the API response
  */
 export interface FareResponse {
-  result: {
+  data: {
     outwardSingles: string[],
     inwardSingles: string[],
     returns: string[]
@@ -30,7 +30,7 @@ export class FareResponseFactory {
     this.links = {};
 
     return {
-      result: {
+      data: {
         outwardSingles: fares.outwardSingles.map(f => this.fareToJSON(f)),
         inwardSingles: fares.inwardSingles.map(f => this.fareToJSON(f)),
         returns: fares.returns.map(f => this.fareToJSON(f))
@@ -67,6 +67,9 @@ export class FareResponseFactory {
         ticketType: this.ticketTypeToJSON(fare.ticketType),
         restriction: fare.restriction.map(this.restrictionToJSON).orNull,
         railcard: fare.railcard.code,
+        toc: fare.fareSetter.orNull,
+        xLondon: fare.xLondon > 0,
+        statusCode: fare.statusCode
       };
     }
 
