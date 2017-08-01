@@ -9,7 +9,8 @@
     "gtest": "mocha --compilers ts:ts-node/register,tsx:ts-node/register 'test/**/*.spec.ts' --grep",
     "watch-test": "mocha -w --compilers ts:ts-node/register,tsx:ts-node/register 'test/**/*.spec.ts'",
     "start": "ts-node ./src/start.ts",
-    "import": "ts-node ./src/import.ts",
+    "data-import": "DATABASE_NAME=fares dtd2mysql --fares",
+    "data-clean": "DATABASE_NAME=fares dtd2mysql --fares-clean",
     "prepublishOnly": "tsc -p ./ --outDir dist/"
   },
   "repository": {
