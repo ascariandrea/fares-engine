@@ -93,6 +93,7 @@ export class RestrictionRepository {
       LocalTime.parse(row.time_to),
       option(row.toc),
       option(row.location),
+      row.min_fare_flag === 1,
       await this.getTimeRestrictionDates(row)
     );
   }
@@ -169,19 +170,20 @@ interface TimeRestrictionRow {
   cf_mkr: CurrentFutureMarker;
   sequence_no: string;
   out_ret: Direction;
+  min_fare_flag: 0 | 1;
 }
 
 interface RestrictionDateRow {
   start_date: string;
   end_date: string;
   cf_mkr: CurrentFutureMarker;
-  monday: number;
-  tuesday: number;
-  wednesday: number;
-  thursday: number;
-  friday: number;
-  saturday: number;
-  sunday: number;
+  monday: 0 | 1;
+  tuesday: 0 | 1;
+  wednesday: 0 | 1;
+  thursday: 0 | 1;
+  friday: 0 | 1;
+  saturday: 0 | 1;
+  sunday: 0 | 1;
 }
 
 export type CalendarRestrictionMap = {

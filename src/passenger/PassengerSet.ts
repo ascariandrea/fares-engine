@@ -31,7 +31,6 @@ export class PassengerSet {
       if (this.hasChildren && railcard.childDiscounts[discountCategory]) statuses.set(railcard.childDiscounts[discountCategory], railcard);
     }
 
-    //TODO ensure the ordering of railcards doesn't mean child status discount adds a railcard of YNG for example
     return statuses;
   }
 

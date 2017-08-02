@@ -67,7 +67,6 @@ export class KoaService {
   };
 
   private getRequest(ctx: Context): FareRequest {
-    // TODO: filter railcards that are not valid for the passenger set
     const railcards = ctx.request.query.railcards ? ctx.request.query.railcards.split(",").map(r => this.railcards[r]) : [];
 
     railcards.push(this.railcards[Railcard.PUBLIC_RAILCARD_CODE]);

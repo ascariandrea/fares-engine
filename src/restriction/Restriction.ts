@@ -78,6 +78,7 @@ export class TimeRestriction {
     public readonly to: LocalTime,
     public readonly toc: Option<Operator>,
     public readonly location: Option<CRS>,
+    public readonly applyRailcardMinimumFare: boolean,
     public readonly dates: RestrictionDate[]
   ) { }
 
