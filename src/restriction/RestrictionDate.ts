@@ -23,7 +23,7 @@ export class RestrictionDate {
    * Returns true if the given date is within the range of the header and the header is valid on that day of the week.
    */
   public matches(date: LocalDate): boolean {
-    return !date.isBefore(this.startDate) && !date.isAfter(this.endDate) && this[date.dayOfWeek().name()] ;
+    return !date.isBefore(this.startDate) && !date.isAfter(this.endDate) && this[date.dayOfWeek().name()];
   }
 
 }
