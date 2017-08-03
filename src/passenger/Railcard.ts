@@ -55,6 +55,14 @@ export class Railcard {
     return (this.bans[RailcardBan.ALL] && this.bans[RailcardBan.ALL].findIndex(ban => ban.applies(origin, ticketCode, routeCode)) > -1) ||
            (this.bans[ticketCode] && this.bans[ticketCode].findIndex(ban => ban.applies(origin, ticketCode, routeCode)) > -1);
   }
+
+  /**
+   * Returns true if this is the public railcard
+   */
+  @memoize
+  public get isPublicRailcard(): boolean {
+    return this.code === Railcard.PUBLIC_RAILCARD_CODE;
+  }
 }
 
 /**

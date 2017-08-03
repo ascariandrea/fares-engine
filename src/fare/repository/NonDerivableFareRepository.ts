@@ -82,6 +82,7 @@ export class NonDerivableFareRepository {
     return fares;
   }
 
+  // TODO fare price sorting
   private getNonDerivableOverrideRows(origin: Location, destination: Location, railcards: Railcard[], date: LocalDate): Bluebird<NonDerivableRow[]> {
     return this.db.query(`
       SELECT * FROM non_derivable_fare_override 
