@@ -126,7 +126,7 @@ class MutableFareOption {
     this.fares = this.fares.concat(new Array(numFares).fill(fareUse));
     this.remainingAdults -= numAdultsApplied;
     this.remainingChildren -= numChildrenApplied;
-    this.railcardUses[fare.railcard.code] -= fare.railcard.isPublicRailcard ? 0 : -1;
+    this.railcardUses[fare.railcard.code] -= fare.railcard.isPublicRailcard ? 0 : 1;
 
     // if the railcard we've used can also have children on it add some child fares as well (as it will be consumed)
     // if the cheapest child fare also uses this railcard put as many on as we can, otherwise as few as possible
@@ -164,7 +164,7 @@ class MutableFareOption {
 
     this.fares = this.fares.concat(new Array(numChildrenToApply).fill(fareUse));
     this.remainingChildren -= numChildrenToApply;
-    this.railcardUses[fare.railcard.code] -= fare.railcard.isPublicRailcard ? 0 : -1;
+    this.railcardUses[fare.railcard.code] -= fare.railcard.isPublicRailcard ? 0 : 1;
   }
 
   /**
