@@ -76,14 +76,14 @@ const restrictionDate = new RestrictionDate(
 );
 
 const currentRules = new RestrictionRules(
-  new RestrictionDirection([], [],
+  new RestrictionDirection("R1_O", [], [],
     [
       new TimeRestriction(LocalTime.parse("09:00"), LocalTime.parse("09:30"), option("LN"), option("SEV"), false, [restrictionDate]),
       new TimeRestriction(LocalTime.parse("09:30"), LocalTime.parse("10:00"), option("LN"), option("CHX"), false, [restrictionDate])
     ],
     new ServiceRestriction([], ["EASED_SERVICE"])
   ),
-  new RestrictionDirection([], [],
+  new RestrictionDirection("R1_R", [], [],
     [
       new TimeRestriction(LocalTime.parse("19:00"), LocalTime.parse("19:30"), option("LN"), option("SEV"), false, [restrictionDate]),
       new TimeRestriction(LocalTime.parse("19:30"), LocalTime.parse("20:00"), option("LN"), option("CHX"), false, [restrictionDate])
@@ -93,8 +93,8 @@ const currentRules = new RestrictionRules(
 );
 
 const futureRules = new RestrictionRules(
-  new RestrictionDirection([], [], [], new ServiceRestriction([], [])),
-  new RestrictionDirection([], [], [], new ServiceRestriction([], []))
+  new RestrictionDirection("R1_O", [], [], [], new ServiceRestriction([], [])),
+  new RestrictionDirection("R1_R", [], [], [], new ServiceRestriction([], []))
 );
 
 export const restriction = new Restriction("LN", [restrictionDate], currentRules, futureRules);

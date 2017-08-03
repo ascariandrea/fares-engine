@@ -59,6 +59,7 @@ export class RestrictionRules {
 export class RestrictionDirection {
 
   constructor(
+    public readonly id: string,
     public readonly arrive: TimeRestriction[],
     public readonly depart: TimeRestriction[],
     public readonly via: TimeRestriction[],

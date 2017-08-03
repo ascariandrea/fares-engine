@@ -62,7 +62,7 @@ export class RestrictionRepository {
       this.getServiceRestriction(header, cfMkr, direction)
     ]);
 
-    return new RestrictionDirection(time.D || [], time.A || [], time.V || [], service);
+    return new RestrictionDirection(header.restriction_code + "_" + direction, time.D || [], time.A || [], time.V || [], service);
   }
 
   private async getServiceRestriction(header: RestrictionHeaderRow, cfMkr: CurrentFutureMarker, direction: Direction): Promise<ServiceRestriction> {

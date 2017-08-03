@@ -36,7 +36,7 @@ describe("Restriction", () => {
       true
     );
 
-    const restrictionDirection = new RestrictionDirection([], [], [], new ServiceRestriction([], []));
+    const restrictionDirection = new RestrictionDirection("R1_O", [], [], [], new ServiceRestriction([], []));
     const currentRules = new RestrictionRules(restrictionDirection, restrictionDirection);
     const futureRules = new RestrictionRules(restrictionDirection, restrictionDirection);
 
