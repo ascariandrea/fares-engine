@@ -34,12 +34,17 @@ export class LocationRepository {
   @memoize
   private async getLocations(): Promise<Location[]> {
     return this.db
-      .query(`SELECT nlc, crs FROM location WHERE nlc != "" AND nlc < "9999" AND CURDATE() BETWEEN start_date AND end_date`)
+      .query(`
+        SELECT nlc, crs, GROUP_CONCAT(distinct substring(group_uic_code,3,4)) AS groups FROM location
+        LEFT JOIN location_group_member member ON uic = member_uic_code AND member.end_date >= CURDATE()
+        WHERE CURDATE() BETWEEN location.start_date AND location.end_date
+        GROUP BY nlc
+      `)
       .map(row => this.getLocation(row));
   }
 
   private async getLocation(location: LocationRow): Promise<Location> {
-    const groups = await this.getGroupStations(location.nlc);
+    const groups = location.groups ? location.groups.split(",") : [];
     const clusters: ClusterMap = {};
 
     // add mapping between stations to the original station
@@ -59,20 +64,12 @@ export class LocationRepository {
     );
   }
 
+  @memoize
   private getClusters(nlc: NLC): Promise<NLC[]> {
     return this.db.query(`            
-      SELECT cluster_id FROM location
-      JOIN station_cluster sc ON location.nlc = sc.cluster_nlc AND sc.start_date <= CURDATE() AND sc.end_date >= CURDATE()
-      WHERE location.nlc = ? AND location.end_date >= CURDATE() 
+      SELECT cluster_id FROM station_cluster 
+      WHERE cluster_nlc = ? AND CURDATE() BETWEEN start_date AND end_date 
     `, [nlc]).map(row => row.cluster_id);
-  }
-
-  private getGroupStations(nlc: NLC): Promise<NLC[]> {
-    return this.db.query(`
-      SELECT substring(group_uic_code,3,4) as nlc FROM location 
-      JOIN location_group_member ON uic = member_uic_code 
-      WHERE location.nlc = ? AND location.end_date >= CURDATE()
-    `, [nlc]).map(row => row.nlc);
   }
 
 }
@@ -88,4 +85,5 @@ export type CRSMap = {
 interface LocationRow {
   nlc: string;
   crs: string;
+  groups: string;
 }
