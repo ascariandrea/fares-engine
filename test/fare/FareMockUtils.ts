@@ -30,7 +30,8 @@ export function createFare(price: Price,
     railcard,
     option(restriction),
     none,
-    0
+    0,
+    false
   );
 }
 
@@ -77,15 +78,15 @@ const restrictionDate = new RestrictionDate(
 const currentRules = new RestrictionRules(
   new RestrictionDirection([], [],
     [
-      new TimeRestriction(LocalTime.parse("09:00"), LocalTime.parse("09:30"), option("LN"), option("SEV"), [restrictionDate]),
-      new TimeRestriction(LocalTime.parse("09:30"), LocalTime.parse("10:00"), option("LN"), option("CHX"), [restrictionDate])
+      new TimeRestriction(LocalTime.parse("09:00"), LocalTime.parse("09:30"), option("LN"), option("SEV"), false, [restrictionDate]),
+      new TimeRestriction(LocalTime.parse("09:30"), LocalTime.parse("10:00"), option("LN"), option("CHX"), false, [restrictionDate])
     ],
     new ServiceRestriction([], ["EASED_SERVICE"])
   ),
   new RestrictionDirection([], [],
     [
-      new TimeRestriction(LocalTime.parse("19:00"), LocalTime.parse("19:30"), option("LN"), option("SEV"), [restrictionDate]),
-      new TimeRestriction(LocalTime.parse("19:30"), LocalTime.parse("20:00"), option("LN"), option("CHX"), [restrictionDate])
+      new TimeRestriction(LocalTime.parse("19:00"), LocalTime.parse("19:30"), option("LN"), option("SEV"), false, [restrictionDate]),
+      new TimeRestriction(LocalTime.parse("19:30"), LocalTime.parse("20:00"), option("LN"), option("CHX"), false, [restrictionDate])
     ],
     new ServiceRestriction([], ["EASED_SERVICE"])
   )
@@ -108,5 +109,6 @@ export const fare = new Fare(
   publicRailcard,
   option(restriction),
   none,
-  0
+  0,
+  false
 );

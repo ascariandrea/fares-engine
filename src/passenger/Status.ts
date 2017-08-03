@@ -35,31 +35,21 @@ export class Status {
   ) {}
 
   /**
-   * Apply the status discount to the given fare
+   * Apply the status discount to the given fare returning no fares if it cannot be applied, the full discount and
+   * the discount with the railcard minimum fare if applicable.
    */
-  public apply(fare: Fare, railcard: Railcard, date: LocalDate): Fare {
+  public apply(fare: Fare, railcard: Railcard, date: LocalDate): Fare[] {
     if (!this.canBeApplied(fare)) {
-      return fare;
+      return [];
     }
 
-    // apply either the calculated fare or the minimum fare override
-    const price = Math.max(
-      Status.round(this.getDiscountedPrice(fare)),
-      railcard.getMinimumFare(fare.ticketType.code, date).getOrElse(0)
-    );
+    const discountPrice = Status.round(this.getDiscountedPrice(fare));
+    const fullDiscountFare = fare.clone(this.statusCode, discountPrice, railcard, false);
+    const minimumFare = railcard
+      .getMinimumFare(fare.ticketType.code, date)
+      .map(price => fare.clone(this.statusCode, price, railcard, true));
 
-    return new Fare(
-      fare.origin,
-      fare.destination,
-      fare.route,
-      fare.ticketType,
-      this.statusCode,
-      price,
-      railcard,
-      fare.restriction,
-      fare.fareSetter,
-      fare.xLondon
-    );
+    return minimumFare.toArray.concat(fullDiscountFare);
   }
 
   /**

@@ -14,6 +14,7 @@ import {RailcardMap} from "../../passenger/repository/RailcardRepository";
 import {NLCMap} from "../../location/repository/LocationRepository";
 import {PassengerSet} from "../../passenger/PassengerSet";
 import {Railcard, RailcardCode} from "../../passenger/Railcard";
+import {Status, StatusCode} from "../../passenger/Status";
 
 export class NonDerivableFareRepository {
 
@@ -48,12 +49,13 @@ export class NonDerivableFareRepository {
         this.locationsByNLC[row.destination_code],
         this.routes[row.route_code],
         this.ticketTypes[row.ticket_code],
-        railcard.adultStatus.get,
+        railcard.adultStatus.getOrElse(Status.ADULT_STATUS_CODE),
         row.adult_fare || 0,
         railcard,
         row.restriction_code ? some(this.restrictions[row.restriction_code]) : none,
         none,
-        row.cross_london_ind
+        row.cross_london_ind,
+        false
       );
 
       fares[adultFare.id] = adultFare;
@@ -65,12 +67,13 @@ export class NonDerivableFareRepository {
         this.locationsByNLC[row.destination_code],
         this.routes[row.route_code],
         this.ticketTypes[row.ticket_code],
-        railcard.childStatus.get,
+        railcard.childStatus.getOrElse(Status.CHILD_STATUS_CODE),
         row.child_fare || 0,
         railcard,
         row.restriction_code ? some(this.restrictions[row.restriction_code]) : none,
         none,
-        row.cross_london_ind
+        row.cross_london_ind,
+        false
       );
 
       fares[childFare.id] = childFare;

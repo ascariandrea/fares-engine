@@ -36,10 +36,12 @@ export class FlowFareRepository {
     const result = {};
 
     for (const fare of flowFares) {
-      for (const [status, railcard] of passengerSet.uniqueStatuses(fare)) {
-        const fareWithStatusApplied = status.apply(fare, railcard, date);
+      result[fare.id] = fare;
 
-        result[fareWithStatusApplied.id] = fareWithStatusApplied;
+      for (const [status, railcard] of passengerSet.uniqueStatuses(fare)) {
+        for (const fareWithStatusApplied of status.apply(fare, railcard, date)) {
+          result[fareWithStatusApplied.id] = fareWithStatusApplied;
+        }
       }
     }
 
@@ -82,7 +84,8 @@ export class FlowFareRepository {
       this.publicRailcard,
       row.restriction_code ? some(this.restrictions[row.restriction_code]) : none,
       option(row.toc),
-      row.cross_london_ind
+      row.cross_london_ind,
+      false
     )
   };
 

@@ -30,7 +30,7 @@ export const yngRailcard = new Railcard(
   0,
   1,
   some("003"),
-  some("001"),
+  none,
   {},
   {},
   none,

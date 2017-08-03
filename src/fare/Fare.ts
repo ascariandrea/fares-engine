@@ -27,7 +27,8 @@ export class Fare {
     public readonly railcard: Railcard,
     public readonly restriction: Option<Restriction>,
     public readonly fareSetter: Option<Operator>,
-    public readonly xLondon: number
+    public readonly xLondon: number,
+    public readonly minimumFareApplied: boolean
   ) { }
 
   /**
@@ -41,8 +42,25 @@ export class Fare {
       this.route.code,
       this.ticketType.code,
       this.statusCode,
+      this.minimumFareApplied ? 1 : 0,
       this.restriction.map(r => r.code).orNull
     ].join("-");
+  }
+
+  public clone(statusCode: StatusCode, price: Price, railcard: Railcard, isMinimumFare: boolean): Fare {
+    return new Fare(
+      this.origin,
+      this.destination,
+      this.route,
+      this.ticketType,
+      statusCode,
+      price,
+      railcard,
+      this.restriction,
+      this.fareSetter,
+      this.xLondon,
+      isMinimumFare
+    );
   }
 
 }

@@ -1,18 +1,19 @@
 import * as chai from "chai";
 import {Fare} from "../../src/fare/Fare";
 import {Status, StatusCode} from "../../src/passenger/Status";
-import {none} from "ts-option";
+import {some, none} from "ts-option";
 import {Route} from "../../src/route/Route";
 import {publicRailcard} from "./Railcard.spec";
 import {LocalDate} from "js-joda";
 import {Location} from "../../src/location/Location";
 import {ticketType} from "../fare/FareMockUtils";
+import {MinimumFare, Railcard} from "../../src/passenger/Railcard";
 
 describe("Status", () => {
 
   it("can correctly apply type0 status discounts", () => {
     const status = getStatus("0");
-    const newFare = status.apply(fare, publicRailcard, LocalDate.now());
+    const [newFare] = status.apply(fare, publicRailcard, LocalDate.now());
 
     chai.expect(newFare.price).to.equal(500);
     chai.expect(newFare.statusCode).to.equal(Status.CHILD_STATUS_CODE);
@@ -20,7 +21,7 @@ describe("Status", () => {
 
   it("can correctly apply typeF status discounts", () => {
     const status = getStatus("F", 100, 100);
-    const newFare = status.apply(fare, publicRailcard, LocalDate.now());
+    const [newFare] = status.apply(fare, publicRailcard, LocalDate.now());
 
     chai.expect(newFare.price).to.equal(100);
     chai.expect(newFare.statusCode).to.equal(Status.CHILD_STATUS_CODE);
@@ -28,7 +29,7 @@ describe("Status", () => {
 
   it("can correctly apply typeM status discounts", () => {
     const status = getStatus("M", 100, 100);
-    const newFare = status.apply(fare, publicRailcard, LocalDate.now());
+    const [newFare] = status.apply(fare, publicRailcard, LocalDate.now());
 
     chai.expect(newFare.price).to.equal(500);
     chai.expect(newFare.statusCode).to.equal(Status.CHILD_STATUS_CODE);
@@ -36,7 +37,7 @@ describe("Status", () => {
 
   it("can correctly apply typeL status discounts", () => {
     const status = getStatus("L", 0, 0, 600);
-    const newFare = status.apply(fare, publicRailcard, LocalDate.now());
+    const [newFare] = status.apply(fare, publicRailcard, LocalDate.now());
 
     chai.expect(newFare.price).to.equal(600);
     chai.expect(newFare.statusCode).to.equal(Status.CHILD_STATUS_CODE);
@@ -44,10 +45,30 @@ describe("Status", () => {
 
   it("can correctly apply typeH status discounts", () => {
     const status = getStatus("H", 0, 0, 0, 600);
-    const newFare = status.apply(fare, publicRailcard, LocalDate.now());
+    const [newFare] = status.apply(fare, publicRailcard, LocalDate.now());
 
     chai.expect(newFare.price).to.equal(600);
     chai.expect(newFare.statusCode).to.equal(Status.CHILD_STATUS_CODE);
+  });
+
+  it("return fare with railcard minimum price applied", () => {
+    const minimumFares = {
+      "SOR": [
+        new MinimumFare(800, LocalDate.parse("2017-01-01"), LocalDate.parse("2017-05-31")),
+        new MinimumFare(900, LocalDate.parse("2017-07-01"), LocalDate.parse("2017-12-31"))
+      ]
+    };
+
+    const railcardWithMin = new Railcard("YNG", 0, 0, 9, 9, 0, 9, some("013"), none, {}, {}, none, {}, minimumFares);
+
+
+    const status = getStatus("0", 0, 0, 0, 600, 0, 0, 0, 0, 500, 1, "013");
+    const [minimum, newFare] = status.apply(fare, railcardWithMin, LocalDate.parse("2017-01-02"));
+
+    chai.expect(newFare.price).to.equal(500);
+    chai.expect(newFare.statusCode).to.equal("013");
+    chai.expect(minimum.price).to.equal(800);
+    chai.expect(minimum.statusCode).to.equal("013");
   });
 
 });
@@ -62,7 +83,8 @@ const fare = new Fare(
   publicRailcard,
   none,
   none,
-  1
+  1,
+  false
 );
 
 
