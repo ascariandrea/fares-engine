@@ -30,9 +30,6 @@ export class NonDerivableFareRepository {
   /**
    * This method will first create a fares map using the non derivable fares, then load the non derivable fare overrides
    * and overlay those, using the id (origin, destination, route, status and restriction code) as the key.
-   *
-   * TODO: check why there may be a non-supression record with both an adult fare and child fare of 99999999
-   *  - does this mean that 99999999 acts as a suppression record?
    */
   public async getFares(origin: Location, destination: Location, passengerSet: PassengerSet, date: LocalDate): Promise<FareMap> {
     return this
@@ -82,7 +79,6 @@ export class NonDerivableFareRepository {
     return fares;
   }
 
-  // TODO fare price sorting
   private getNonDerivableOverrideRows(origin: Location, destination: Location, railcards: Railcard[], date: LocalDate): Bluebird<NonDerivableRow[]> {
     return this.db.query(`
       SELECT * FROM non_derivable_fare_override 

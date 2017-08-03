@@ -6,6 +6,7 @@ import {CalendarRestrictionMap} from "../restriction/repository/RestrictionRepos
 import {PassengerSet} from "../passenger/PassengerSet";
 import {Location} from "../location/Location";
 import {FarePreferences, FareRequest} from "../service/api/FareRequest";
+import {SortedFareList} from "./CheapestFareOptionFactory";
 
 /**
  * Service that uses a FlowRepository and NonDerivableFareRepository to return fares using the local database.
@@ -109,17 +110,27 @@ export class FareService {
       else result.singles.push(fare);
     }
 
+    result.singles.sort(sortByPrice);
+    result.returns.sort(sortByPrice);
+
     return result;
   }
 
 }
 
 /**
+ * Sort fares by price
+ */
+function sortByPrice(a: Fare, b: Fare): number {
+  return a.price - b.price;
+}
+
+/**
  * Fares result set partitioned by type
  */
 interface PartitionedFares {
-  singles: Fare[],
-  returns: Fare[],
+  singles: SortedFareList,
+  returns: SortedFareList,
   seasons: Fare[]
 }
 
@@ -129,9 +140,9 @@ interface PartitionedFares {
 export class FareServiceResponse {
 
   constructor(
-    public readonly outwardSingles: Fare[],
-    public readonly inwardSingles: Fare[],
-    public readonly returns: Fare[]
+    public readonly outwardSingles: SortedFareList,
+    public readonly inwardSingles: SortedFareList,
+    public readonly returns: SortedFareList
   ) { }
 
 }

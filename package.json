@@ -1,6 +1,6 @@
 {
   "name": "gb-rail-fares",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Library, API and user interface for calculating British rail fares",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
