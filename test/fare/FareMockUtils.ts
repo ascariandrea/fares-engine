@@ -35,6 +35,18 @@ export function createFare(price: Price,
   );
 }
 
+export function createSingleFare(price: Price, statusCode: StatusCode = Status.ADULT_STATUS_CODE, railcard: Railcard = publicRailcard): Fare {
+  return createFare(price, statusCode, railcard, route, singleTicketType);
+}
+
+export function createAdvanceFare(price: Price, statusCode: StatusCode = Status.ADULT_STATUS_CODE): Fare {
+  return createFare(price, statusCode, publicRailcard, route, advanceTicketType);
+}
+
+export function createFirstClassFare(price: Price, statusCode: StatusCode = Status.ADULT_STATUS_CODE): Fare {
+  return createFare(price, statusCode, publicRailcard, route, firstClassTicketType);
+}
+
 export const validityType = new ValidityType(
   "1E",
   "Some Validity",
@@ -57,6 +69,57 @@ export const ticketType = new TicketType(
   false,
   false,
   false,
+  1
+);
+
+export const singleTicketType = new TicketType(
+  "SDS",
+  "Standard Day Single",
+  0,
+  1,
+  0,
+  1,
+  1,
+  1,
+  validityType,
+  false,
+  false,
+  false,
+  false,
+  1
+);
+
+export const advanceTicketType = new TicketType(
+  "2CC",
+  "Advance",
+  0,
+  1,
+  0,
+  1,
+  1,
+  1,
+  validityType,
+  false,
+  false,
+  true,
+  false,
+  1
+);
+
+export const firstClassTicketType = new TicketType(
+  "FDS",
+  "Advance",
+  0,
+  1,
+  0,
+  1,
+  1,
+  1,
+  validityType,
+  false,
+  false,
+  false,
+  true,
   1
 );
 

@@ -1,6 +1,6 @@
 {
   "name": "gb-rail-fares",
-  "version": "1.0.10",
+  "version": "1.1.0",
   "description": "Library, API and user interface for calculating British rail fares",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -45,11 +45,13 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.8",
-    "@types/chai": "^4.0.2",
+    "@types/chai": "^4.0.3",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.19",
-    "chai": "^4.0.2",
+    "@types/node": "^8.0.22",
+    "@types/sinon": "^2.3.3",
+    "chai": "^4.1.1",
     "mocha": "^3.5.0",
+    "sinon": "^3.2.0",
     "ts-node": "^3.1.0",
     "typescript": "^2.4.1"
   }

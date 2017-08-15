@@ -3,6 +3,7 @@ import {Option} from "ts-option";
 import {PassengerSet} from "../../passenger/PassengerSet";
 import {TicketType} from "../../tickettype/TicketType";
 import {Location} from "../../location/Location";
+import {Fare} from "../../fare/Fare";
 
 /**
  * Request for a fares capturing the origin, destination, dates and passenger set.
@@ -26,24 +27,11 @@ export class FareRequest {
 export class FarePreferences {
 
   constructor(
-    private readonly firstClass: boolean,
-    private readonly standardClass: boolean,
-    private readonly singles: boolean,
-    private readonly returns: boolean,
-    private readonly advance: boolean,
+    public readonly firstClass: boolean,
+    public readonly standardClass: boolean,
+    public readonly singles: boolean,
+    public readonly returns: boolean,
+    public readonly advance: boolean,
   ) { }
-
-  /**
-   * Returns true if non of the passenger sets fare preferences restrict the ticket type
-   */
-  public isValid(ticketType: TicketType): boolean {
-    return !(
-      (!this.firstClass && ticketType.isFirstClass) ||
-      (!this.standardClass && !ticketType.isFirstClass) ||
-      (!this.returns && ticketType.isReturn) ||
-      (!this.singles && !ticketType.isReturn) ||
-      (!this.advance && ticketType.isAdvance)
-    )
-  }
 
 }

@@ -2,23 +2,21 @@ import {FlowFareRepository} from "./repository/FlowFareRepository";
 import {NonDerivableFareRepository} from "./repository/NonDerivableFareRepository";
 import {LocalDate} from "js-joda";
 import {Fare} from "./Fare";
-import {CalendarRestrictionMap} from "../restriction/repository/RestrictionRepository";
 import {PassengerSet} from "../passenger/PassengerSet";
 import {Location} from "../location/Location";
 import {FarePreferences, FareRequest} from "../service/api/FareRequest";
 import {SortedFareList} from "./CheapestFareOptionFactory";
+import {FareFilter} from "./filter/FareFilter";
 
 /**
  * Service that uses a FlowRepository and NonDerivableFareRepository to return fares using the local database.
- *
- * TODO unit test the calendar restrictions, railcard restrictions and fare preferences
  */
 export class FareService {
 
   constructor(
     private readonly flowRepository: FlowFareRepository,
     private readonly nonDerivableRepository: NonDerivableFareRepository,
-    private readonly calendarRestrictions: CalendarRestrictionMap
+    private readonly filters: FareFilter[]
   ) {}
 
   /**
@@ -62,8 +60,8 @@ export class FareService {
   }
 
   /**
-   * Add the flow fares and non-derivable fares to a single, indexed map with the NDFs taking priority over the flow
-   * fares.
+   * Merge the flow and non-derivable fares (NDFs taking priority), filter the fares and then return them partitioned
+   * by type (single/return/season) and sorted by price.
    */
   private async getFaresForDate(origin: Location,
                                 destination: Location,
@@ -76,40 +74,16 @@ export class FareService {
       this.flowRepository.getFares(origin, destination, passengerSet, date)
     ]);
 
-    // merge in the ndfs overwriting and fares that have the same ID (mutates flowFares for performance)
+    // merge in the NDFs, overwriting flow fares that have the same ID (mutates flowFares for performance)
     const fares = Object.assign(flowFares, nonDerivableFares);
-    const result: Fare[] = [];
 
-    // filter the fares with a calendar restriction
-    for (const fareId in fares) {
-      const fare = fares[fareId];
-      const calendarRestricted = this.calendarRestrictions[fare.ticketType.code] && this.calendarRestrictions[fare.ticketType.code].matches(date, fare);
-      const railcardRestricted = fare.railcard.isBanned(fare.origin, fare.ticketType.code, fare.route.code);
+    // remove any fares that do not pass all the filter functions, then group the fares by type
+    const result = Object
+      .values(fares)
+      .filter(fare => this.filters.every(filter => filter(fare, date, farePreferences)))
+      .reduce(partitionByType, { singles: [], returns: [], seasons: [] });
 
-      if (!calendarRestricted && !railcardRestricted && fare.price !== 0 && farePreferences.isValid(fare.ticketType)) {
-        result.push(fare);
-      }
-    }
-
-    return this.partitionByType(result);
-  }
-
-  /**
-   * Group the fares by type (single, return, season).
-   */
-  private partitionByType(fares: Fare[]): PartitionedFares {
-    const result: PartitionedFares = {
-      singles: [],
-      returns: [],
-      seasons: []
-    };
-
-    for (const fare of fares) {
-      if (fare.ticketType.isSeason) result.seasons.push(fare);
-      else if (fare.ticketType.isReturn) result.returns.push(fare);
-      else result.singles.push(fare);
-    }
-
+    // sort the fares by price
     result.singles.sort(sortByPrice);
     result.returns.sort(sortByPrice);
 
@@ -119,7 +93,18 @@ export class FareService {
 }
 
 /**
- * Sort fares by price
+ * Group the fares by type (single, return, season).
+ */
+function partitionByType(result: PartitionedFares, fare: Fare): PartitionedFares {
+    if (fare.ticketType.isSeason) result.seasons.push(fare);
+    else if (fare.ticketType.isReturn) result.returns.push(fare);
+    else result.singles.push(fare);
+
+    return result;
+}
+
+/**
+ * Sort fares by price, cheapest first (ascending)
  */
 function sortByPrice(a: Fare, b: Fare): number {
   return a.price - b.price;

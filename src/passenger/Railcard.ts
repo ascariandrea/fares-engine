@@ -81,11 +81,11 @@ export class RailcardBan {
    * returns true if the ban applies at the given location, with the given ticket type code and route code
    */
   public applies(origin: Location, ticketCode: TicketCode, routeCode: RouteCode): boolean {
-    const originMatches = this.origin.flatMap(o => origin.crs.map(crs => o === crs)).getOrElse(false);
-    const ticketTypeMatches = this.ticketCode.map(t => t === ticketCode).getOrElse(false);
-    const routeCodeMatches = this.routeCode.map(r => r === routeCode).getOrElse(false);
+    const originMatches = this.origin.flatMap(o => origin.crs.map(crs => o === crs)).getOrElse(true);
+    const ticketTypeMatches = this.ticketCode.map(t => t === ticketCode).getOrElse(true);
+    const routeCodeMatches = this.routeCode.map(r => r === routeCode).getOrElse(true);
 
-    return originMatches || ticketTypeMatches || routeCodeMatches;
+    return originMatches && ticketTypeMatches && routeCodeMatches;
   }
 
 }

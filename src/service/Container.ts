@@ -15,6 +15,10 @@ import {FlowFareRepository} from "../fare/repository/FlowFareRepository";
 import {Railcard} from "../passenger/Railcard";
 import {FareService} from "../fare/FareService";
 import {FareResponseFactory} from "./api/FareResponse";
+import {suppressedFareFilter} from "../fare/filter/SuppressedFareFilter";
+import {railcardBanFilter} from "../fare/filter/RailcardBanFilter";
+import {calendarRestrictionFilter} from "../fare/filter/CalendarRestrictionFilter";
+import {farePreferencesFilter} from "../fare/filter/FarePreferencesFilter";
 
 export class Container {
 
@@ -53,7 +57,12 @@ export class Container {
 
     const ndfRepository = new NonDerivableFareRepository(db, ticketTypes, restrictions, routes, railcards, locationsByNLC);
     const flowRepository = new FlowFareRepository(db, ticketTypes, restrictions, routes, railcards[Railcard.PUBLIC_RAILCARD_CODE], locationsByNLC);
-    const fareService = new FareService(flowRepository, ndfRepository, calendarRestrictions);
+    const fareService = new FareService(flowRepository, ndfRepository, [
+      suppressedFareFilter,
+      railcardBanFilter,
+      calendarRestrictionFilter(calendarRestrictions),
+      farePreferencesFilter
+    ]);
 
     return new KoaService(
       fareService,

@@ -16,7 +16,8 @@ npm test
 ## Run
 
 ```
-npm run import /path/to/RJFAFxxx.ZIP #first run only
+npm run data-import /path/to/RJFAFxxx.ZIP #first run only
+npm run data-clean 
 npm start
 ```
 

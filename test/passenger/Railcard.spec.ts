@@ -117,11 +117,11 @@ describe("RailcardBan", () => {
     ban = new RailcardBan(some("TBW"), some("SOR"), some("00215"));
 
     chai.expect(ban.applies(new Location("1111", some("TON"), {}, []), "SOS", "00000")).to.equal(false);
-    chai.expect(ban.applies(new Location("1111", some("TON"), {}, []), "SOR", "00000")).to.equal(true);
-    chai.expect(ban.applies(new Location("1111", some("TON"), {}, []), "SOR", "00215")).to.equal(true);
+    chai.expect(ban.applies(new Location("1111", some("TON"), {}, []), "SOR", "00000")).to.equal(false);
+    chai.expect(ban.applies(new Location("1111", some("TON"), {}, []), "SOR", "00215")).to.equal(false);
 
-    chai.expect(ban.applies(new Location("1111", some("TBW"), {}, []), "SOS", "00000")).to.equal(true);
-    chai.expect(ban.applies(new Location("1111", some("TBW"), {}, []), "SOR", "00000")).to.equal(true);
+    chai.expect(ban.applies(new Location("1111", some("TBW"), {}, []), "SOS", "00000")).to.equal(false);
+    chai.expect(ban.applies(new Location("1111", some("TBW"), {}, []), "SOR", "00000")).to.equal(false);
     chai.expect(ban.applies(new Location("1111", some("TBW"), {}, []), "SOR", "00215")).to.equal(true);
   });
 
