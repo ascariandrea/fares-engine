@@ -19,6 +19,8 @@ import {suppressedFareFilter} from "../fare/filter/SuppressedFareFilter";
 import {railcardBanFilter} from "../fare/filter/RailcardBanFilter";
 import {calendarRestrictionFilter} from "../fare/filter/CalendarRestrictionFilter";
 import {farePreferencesFilter} from "../fare/filter/FarePreferencesFilter";
+import {AdvancePurchaseRepository} from "../tickettype/repository/AdvancePurchaseRepository";
+import {advancePuchaseFilter} from "../fare/filter/AdvancePurchaseFilter";
 
 export class Container {
 
@@ -35,8 +37,12 @@ export class Container {
     const validityTypeRepository = new ValidityTypeRepository(db);
     const validityTypes = await validityTypeRepository.getValidityTypes();
 
+    this.getLog().info("Loading advance purchase data");
+    const advanceRepository = new AdvancePurchaseRepository(db);
+    const apData = await advanceRepository.getAdvancePurchaseData();
+
     this.getLog().info("Loading ticket types");
-    const ticketTypeRepository = new TicketTypeRepository(db, validityTypes);
+    const ticketTypeRepository = new TicketTypeRepository(db, validityTypes, apData);
     const ticketTypes = await ticketTypeRepository.getTicketTypes();
 
     this.getLog().info("Loading restrictions");
@@ -61,7 +67,8 @@ export class Container {
       suppressedFareFilter,
       railcardBanFilter,
       calendarRestrictionFilter(calendarRestrictions),
-      farePreferencesFilter
+      farePreferencesFilter,
+      advancePuchaseFilter(apData)
     ]);
 
     return new KoaService(

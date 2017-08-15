@@ -25,6 +25,7 @@ export class TicketType {
     public readonly isReturn: boolean,
     public readonly isSeason: boolean,
     public readonly isAdvance: boolean,
+    public readonly isReservationRequired: boolean,
     public readonly isFirstClass: boolean,
     public readonly discountCategory: DiscountCategory
   ) {}

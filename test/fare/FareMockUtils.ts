@@ -69,6 +69,7 @@ export const ticketType = new TicketType(
   false,
   false,
   false,
+  false,
   1
 );
 
@@ -82,6 +83,7 @@ export const singleTicketType = new TicketType(
   1,
   1,
   validityType,
+  false,
   false,
   false,
   false,
@@ -102,6 +104,7 @@ export const advanceTicketType = new TicketType(
   false,
   false,
   true,
+  true,
   false,
   1
 );
@@ -116,6 +119,7 @@ export const firstClassTicketType = new TicketType(
   1,
   1,
   validityType,
+  false,
   false,
   false,
   false,
