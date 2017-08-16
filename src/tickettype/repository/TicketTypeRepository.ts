@@ -1,7 +1,7 @@
 
 import {TicketCode, TicketType} from "../TicketType";
 import {indexBy} from "../../util/array";
-import {ValidityCode} from "../../validitytype/ValidityType";
+import {ValidityCode, ValidityType} from "../../validitytype/ValidityType";
 import {ValidityTypeMap} from "../../validitytype/repository/ValidityTypeRepository";
 import {DiscountCategory} from "../../passenger/Status";
 import {AdvancePurchaseMap} from "./AdvancePurchaseRepository";
@@ -14,8 +14,7 @@ export class TicketTypeRepository {
 
   constructor(
     private readonly db,
-    private readonly validityTypes: ValidityTypeMap,
-    private readonly advancePurchase: AdvancePurchaseMap
+    private readonly validityTypes: ValidityTypeMap
   ) { }
 
   /**
@@ -41,7 +40,7 @@ export class TicketTypeRepository {
       this.validityTypes[row.validity_code],
       row.tkt_type === Direction.Return,
       row.tkt_type === Direction.Season,
-      this.advancePurchase[row.ticket_code] || row.description === "ADVANCE" ? true : false,
+      row.validity_code === ValidityType.ADVANCE,
       row.reservation_required !== ReservationType.NotRequired,
       row.tkt_class === Class.First,
       row.discount_category

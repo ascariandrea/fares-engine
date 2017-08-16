@@ -14,6 +14,8 @@ export type ValidityCode = string;
  */
 export class ValidityType {
 
+  public static readonly ADVANCE = "64";
+
   constructor(
     public readonly code: ValidityCode,
     public readonly name: string,

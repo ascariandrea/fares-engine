@@ -26,37 +26,30 @@ export class Container {
 
   @memoize
   public async getKoaService(): Promise<KoaService> {
-
     const db = await this.getDatabase();
-
-    this.getLog().info("Loading routes");
     const routeRepository = new RouteRepository(db);
-    const routes = await routeRepository.getRoutes();
-
-    this.getLog().info("Loading validity types");
+    const restrictionRepository = new RestrictionRepository(db);
     const validityTypeRepository = new ValidityTypeRepository(db);
-    const validityTypes = await validityTypeRepository.getValidityTypes();
-
-    this.getLog().info("Loading advance purchase data");
     const advanceRepository = new AdvancePurchaseRepository(db);
-    const apData = await advanceRepository.getAdvancePurchaseData();
+    const locationRepository = new LocationRepository(db);
+
+    this.getLog().info("Loading locations, routes, validity and restrictions");
+    const [locationsByNLC, routes, validityTypes, apData, restrictions, calendarRestrictions] = await Promise.all([
+      locationRepository.getLocationsByNLC(),
+      routeRepository.getRoutes(),
+      validityTypeRepository.getValidityTypes(),
+      advanceRepository.getAdvancePurchaseData(),
+      restrictionRepository.getRestrictions(),
+      restrictionRepository.getCalendarRestrictions()
+    ]);
 
     this.getLog().info("Loading ticket types");
-    const ticketTypeRepository = new TicketTypeRepository(db, validityTypes, apData);
+    const ticketTypeRepository = new TicketTypeRepository(db, validityTypes);
     const ticketTypes = await ticketTypeRepository.getTicketTypes();
-
-    this.getLog().info("Loading restrictions");
-    const restrictionRepository = new RestrictionRepository(db);
-    const restrictions = await restrictionRepository.getRestrictions();
-    const calendarRestrictions = await restrictionRepository.getCalendarRestrictions();
 
     this.getLog().info("Loading railcards");
     const railcardRepository = new RailcardRepository(db, restrictions);
     const railcards = await railcardRepository.getRailcards();
-
-    this.getLog().info("Loading stations by NLC");
-    const locationRepository = new LocationRepository(db);
-    const locationsByNLC = await locationRepository.getLocationsByNLC();
 
     this.getLog().info("Loading stations by CRS");
     const locationsByCRS = await locationRepository.getLocationsByCRS();
