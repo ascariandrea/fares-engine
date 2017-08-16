@@ -1,7 +1,7 @@
 import * as chai from "chai";
 import {LocalDate} from "js-joda";
 import {createAdvanceFare} from "../FareMockUtils";
-import {advancePuchaseFilter} from "../../../src/fare/filter/AdvancePurchaseFilter";
+import {advancePurchaseFilter} from "../../../src/fare/filter/AdvancePurchaseFilter";
 import {FarePreferences} from "../../../src/service/api/FareRequest";
 import {AdvancePurchase, CheckType} from "../../../src/tickettype/AdvancePurchase";
 import {none, some} from "ts-option";
@@ -16,7 +16,7 @@ describe("AdvancePurchaseFilter", () => {
       "2CC": [new AdvancePurchase("2CC", none, none, CheckType.Hours, 24, none)]
     };
 
-    const filter = advancePuchaseFilter(apData);
+    const filter = advancePurchaseFilter(apData);
     const now = LocalDate.now();
     const dayAfterTomorrow = now.plusDays(2);
 
@@ -29,7 +29,7 @@ describe("AdvancePurchaseFilter", () => {
       "2CC": [new AdvancePurchase("2CC", none, none, CheckType.Days, 1, none)]
     };
 
-    const filter = advancePuchaseFilter(apData);
+    const filter = advancePurchaseFilter(apData);
     const now = LocalDate.now();
     const dayAfterTomorrow = now.plusDays(2);
 
@@ -46,7 +46,7 @@ describe("AdvancePurchaseFilter", () => {
       "2CC": [new AdvancePurchase("2CC", some("2E"), none, CheckType.Days, 1, none)]
     };
 
-    const filter = advancePuchaseFilter(apData);
+    const filter = advancePurchaseFilter(apData);
     const now = LocalDate.now();
     const dayAfterTomorrow = now.plusDays(2);
 
@@ -59,7 +59,7 @@ describe("AdvancePurchaseFilter", () => {
       "2CC": [new AdvancePurchase("2CC", some("LN"), none, CheckType.Days, 1, none)]
     };
 
-    const filter = advancePuchaseFilter(apData);
+    const filter = advancePurchaseFilter(apData);
     const now = LocalDate.now();
     const dayAfterTomorrow = now.plusDays(2);
 

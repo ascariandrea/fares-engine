@@ -7,7 +7,7 @@ import {AdvancePurchase, CheckType} from "../../tickettype/AdvancePurchase";
 /**
  * Ensure that the Advance Purchase booking horizon has been met
  */
-export function advancePuchaseFilter(apData: AdvancePurchaseMap): FareFilter {
+export function advancePurchaseFilter(apData: AdvancePurchaseMap): FareFilter {
 
   /**
    * If there is no AP data or none of the AP rules apply then it's valid
