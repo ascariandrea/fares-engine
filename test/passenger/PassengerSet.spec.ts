@@ -24,7 +24,9 @@ describe("PassengerSet", () => {
     { 0: statusH, 1: statusF }, //child status discounts
     none,
     {},
-    {}
+    {},
+    false,
+    []
   );
 
   const yngRailcard = new Railcard(
@@ -41,7 +43,9 @@ describe("PassengerSet", () => {
     { 0: statusH, 1: statusF }, // child status discounts
     none,
     {},
-    {}
+    {},
+    false,
+    []
   );
 
   it("does not return a child status discount when there are no children in the passenger set", () => {
