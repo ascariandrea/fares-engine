@@ -59,7 +59,7 @@ describe("Status", () => {
       ]
     };
 
-    const railcardWithMin = new Railcard("YNG", 0, 0, 9, 9, 0, 9, some("013"), none, {}, {}, none, {}, minimumFares);
+    const railcardWithMin = new Railcard("YNG", 0, 0, 9, 9, 0, 9, some("013"), none, {}, {}, none, {}, minimumFares, false, []);
 
 
     const status = getStatus("0", 0, 0, 0, 600, 0, 0, 0, 0, 500, 1, "013");
@@ -69,6 +69,15 @@ describe("Status", () => {
     chai.expect(newFare.statusCode).to.equal("013");
     chai.expect(minimum.price).to.equal(800);
     chai.expect(minimum.statusCode).to.equal("013");
+  });
+
+  it("will not apply the status if the railcard doesn't apply", () => {
+    const geography = [fare.destination.nlc];
+    const railcard = new Railcard("", 0, 0, 9, 9, 0, 9, some("000"), some("001"), {}, {}, none, {}, {}, true, geography);
+    const status = getStatus("0");
+    const fares = status.apply(fare, railcard, LocalDate.now());
+
+    chai.expect(fares.length).to.equal(0);
   });
 
 });

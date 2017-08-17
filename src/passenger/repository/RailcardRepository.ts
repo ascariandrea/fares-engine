@@ -10,7 +10,7 @@ import {Price} from "../../fare/Fare";
 import {LocalDate} from "js-joda";
 import {CurrentFutureMarker} from "../../restriction/RestrictionDate";
 import {RouteCode} from "../../route/Route";
-import {CRS} from "../../location/Location";
+import {CRS, NLC} from "../../location/Location";
 import {RestrictionMap} from "../../restriction/repository/RestrictionRepository";
 
 /**
@@ -27,12 +27,13 @@ export class RailcardRepository {
    * Get a map of all railcards indexed by railcard code
    */
   public async getRailcards(): Promise<RailcardMap> {
-    const [railcards, statuses, minimumFares, restrictions, bans] = await Promise.all([
+    const [railcards, statuses, minimumFares, restrictions, bans, geography] = await Promise.all([
       this.getAllRailcards(),
       this.getAllStatuses(),
       this.getMinimumFares(),
       this.getRestrictions(),
-      this.getBans()
+      this.getBans(),
+      this.getGeography()
     ]);
 
     const result = {};
@@ -52,9 +53,11 @@ export class RailcardRepository {
         option(railcard.child_status),
         statuses[railcard.adult_status] || {},
         statuses[railcard.child_status] || {},
-        option(this.restrictions[restrictions[railcard.code]]),
-        bans[railcard.code] || {},
-        minimumFares[railcard.code] || {},
+        option(this.restrictions[restrictions[code]]),
+        bans[code] || {},
+        minimumFares[code] || {},
+        railcard.restricted_by_area === 1,
+        geography[code] || []
       );
     }
 
@@ -147,23 +150,42 @@ export class RailcardRepository {
       .query(`SELECT * FROM restriction_railcard WHERE total_ban IS NOT NULL`)
       .reduce(createBan, {});
   }
+
+  private getGeography(): Promise<RailcardGeographyMap> {
+    const groupLocations = (map: RailcardGeographyMap, item: RailcardGeographyRow) => {
+      map[item.railcard_code] = map[item.railcard_code] || [];
+      map[item.railcard_code].push(item.nlc);
+
+      return map;
+    };
+
+    return this.db
+      .query(`SELECT railcard_code, SUBSTRING(uic_code, 3, 4) as nlc FROM location_railcard WHERE end_date > CURDATE()`)
+      .reduce(groupLocations, {});
+  }
 }
 
 interface MinimumFareRow {
-  start_date: string,
-  end_date: string,
-  railcard_code: RailcardCode,
-  ticket_code: TicketCode,
-  minimum_fare: Price
+  start_date: string;
+  end_date: string;
+  railcard_code: RailcardCode;
+  ticket_code: TicketCode;
+  minimum_fare: Price;
 }
 
 interface RailcardBanRow {
-  railcard_code: RailcardCode,
-  restriction_code: RestrictionCode,
-  location: CRS,
-  ticket_code: TicketCode,
-  route_code: RouteCode,
+  railcard_code: RailcardCode;
+  restriction_code: RestrictionCode;
+  location: CRS;
+  ticket_code: TicketCode;
+  route_code: RouteCode;
   cf_mkr: CurrentFutureMarker;
+  restricted_by_area: 0 | 1
+}
+
+interface RailcardGeographyRow {
+  railcard_code: RailcardCode;
+  nlc: NLC;
 }
 
 export type RailcardMap = {
@@ -190,3 +212,6 @@ type StatusCodeStatusMap = {
   [statusCode: string]: StatusMap
 }
 
+type RailcardGeographyMap = {
+  [railcardCode: string]: NLC[]
+}

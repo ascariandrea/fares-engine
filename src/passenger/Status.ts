@@ -39,7 +39,7 @@ export class Status {
    * the discount with the railcard minimum fare if applicable.
    */
   public apply(fare: Fare, railcard: Railcard, date: LocalDate): Fare[] {
-    if (!this.canBeApplied(fare)) {
+    if (!this.canBeApplied(fare) || !railcard.canBeApplied(fare.origin.nlc, fare.destination.nlc)) {
       return [];
     }
 

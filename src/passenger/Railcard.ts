@@ -8,6 +8,7 @@ import {Price} from "../fare/Fare";
 import {LocalDate} from "js-joda";
 import {CRS, Location} from "../location/Location";
 import memoize = require("memoized-class-decorator");
+import {NLC} from "../index";
 
 
 /**
@@ -32,8 +33,18 @@ export class Railcard {
     public readonly childDiscounts: StatusMap,
     public readonly restriction: Option<Restriction>,
     public readonly bans: RailcardBanMap,
-    public readonly minimumFares: MinimumFareMap
+    public readonly minimumFares: MinimumFareMap,
+    public readonly isRestrictedByArea: boolean,
+    public readonly geography: NLC[]
   ) {}
+
+  /**
+   * Returns true if not restricted by area or the origin and destination are both within the geography
+   */
+  @memoize
+  public canBeApplied(origin: NLC, destination: NLC): boolean {
+    return !this.isRestrictedByArea || (this.geography.includes(origin) && this.geography.includes(destination));
+  }
 
   /**
    * This method checks for a minimum fare that applies to the given ticket type

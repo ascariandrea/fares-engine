@@ -3,6 +3,7 @@ import {Railcard, MinimumFare, RailcardBan} from "../../src/passenger/Railcard";
 import {none, some} from "ts-option";
 import {LocalDate} from "js-joda";
 import {Location} from "../../src/location/Location";
+import {fare} from "../fare/FareMockUtils";
 
 export const publicRailcard = new Railcard(
   "",
@@ -18,7 +19,9 @@ export const publicRailcard = new Railcard(
   {},
   none,
   {},
-  {}
+  {},
+  false,
+  []
 );
 
 export const yngRailcard = new Railcard(
@@ -35,7 +38,9 @@ export const yngRailcard = new Railcard(
   {},
   none,
   {},
-  {}
+  {},
+  false,
+  []
 );
 
 export const disRailcard = new Railcard(
@@ -52,9 +57,10 @@ export const disRailcard = new Railcard(
   {},
   none,
   {},
-  {}
+  {},
+  false,
+  []
 );
-
 
 export const dicRailcard = new Railcard(
   "DIC",
@@ -70,7 +76,9 @@ export const dicRailcard = new Railcard(
   {},
   none,
   {},
-  {}
+  {},
+  false,
+  []
 );
 
 describe("Railcard", () => {
@@ -83,12 +91,33 @@ describe("Railcard", () => {
       ]
     };
 
-    const railcard = new Railcard("", 0, 0, 9, 9, 0, 9, some("000"), some("001"), {}, {}, none, {}, minimumFares);
+    const railcard = new Railcard("", 0, 0, 9, 9, 0, 9, some("000"), some("001"), {}, {}, none, {}, minimumFares, false, []);
 
     chai.expect(railcard.getMinimumFare("SOR", LocalDate.parse("2017-02-01"))).to.deep.equal(none);
     chai.expect(railcard.getMinimumFare("SOS", LocalDate.parse("2017-02-01"))).to.deep.equal(some(100));
     chai.expect(railcard.getMinimumFare("SOS", LocalDate.parse("2017-06-01"))).to.deep.equal(none);
     chai.expect(railcard.getMinimumFare("SOS", LocalDate.parse("2017-12-01"))).to.deep.equal(some(200));
+  });
+
+  it("will apply the railcard if no geography is set", () => {
+    const railcard = new Railcard("", 0, 0, 9, 9, 0, 9, some("000"), some("001"), {}, {}, none, {}, {}, false, []);
+
+    chai.expect(railcard.canBeApplied(fare.origin.nlc, fare.destination.nlc)).to.equal(true);
+  });
+
+
+  it("will apply the railcard if the railcard geography permits", () => {
+    const geography = [fare.destination.nlc, fare.origin.nlc];
+    const railcard = new Railcard("", 0, 0, 9, 9, 0, 9, some("000"), some("001"), {}, {}, none, {}, {}, true, geography);
+
+    chai.expect(railcard.canBeApplied(fare.origin.nlc, fare.destination.nlc)).to.equal(true);
+  });
+
+  it("will not apply the railcard if the railcard geography does not permit", () => {
+    const geography = [fare.destination.nlc];
+    const railcard = new Railcard("", 0, 0, 9, 9, 0, 9, some("000"), some("001"), {}, {}, none, {}, {}, true, geography);
+
+    chai.expect(railcard.canBeApplied(fare.origin.nlc, fare.destination.nlc)).to.equal(false);
   });
 
 });
