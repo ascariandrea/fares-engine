@@ -70,7 +70,9 @@ export const ticketType = new TicketType(
   false,
   false,
   false,
-  1
+  1,
+  LocalDate.now(),
+  LocalDate.now()
 );
 
 export const singleTicketType = new TicketType(
@@ -88,7 +90,9 @@ export const singleTicketType = new TicketType(
   false,
   false,
   false,
-  1
+  1,
+  LocalDate.now(),
+  LocalDate.now()
 );
 
 export const advanceTicketType = new TicketType(
@@ -106,7 +110,9 @@ export const advanceTicketType = new TicketType(
   true,
   true,
   false,
-  1
+  1,
+  LocalDate.now(),
+  LocalDate.now()
 );
 
 export const firstClassTicketType = new TicketType(
@@ -124,7 +130,9 @@ export const firstClassTicketType = new TicketType(
   false,
   false,
   true,
-  1
+  1,
+  LocalDate.now(),
+  LocalDate.now()
 );
 
 export const route = new Route("00101", "NotMGT", [], ["MGT"]);

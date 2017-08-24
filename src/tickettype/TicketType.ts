@@ -1,6 +1,7 @@
 
 import {ValidityType} from "../validitytype/ValidityType";
 import {DiscountCategory} from "../passenger/Status";
+import {LocalDate} from "js-joda";
 
 /**
  * 3 character alpha-numeric ticket code, e.g. SOS
@@ -27,7 +28,9 @@ export class TicketType {
     public readonly isAdvance: boolean,
     public readonly isReservationRequired: boolean,
     public readonly isFirstClass: boolean,
-    public readonly discountCategory: DiscountCategory
+    public readonly discountCategory: DiscountCategory,
+    public readonly startDate: LocalDate,
+    public readonly endDate: LocalDate
   ) {}
 
   /**

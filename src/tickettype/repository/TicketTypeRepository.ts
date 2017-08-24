@@ -4,8 +4,7 @@ import {indexBy} from "../../util/array";
 import {ValidityCode, ValidityType} from "../../validitytype/ValidityType";
 import {ValidityTypeMap} from "../../validitytype/repository/ValidityTypeRepository";
 import {DiscountCategory} from "../../passenger/Status";
-import {AdvancePurchaseMap} from "./AdvancePurchaseRepository";
-import {ticketType} from "../../../test/fare/FareMockUtils";
+import {LocalDate} from "js-joda";
 
 /**
  * Loads ticket types from a MySQL compatible database
@@ -43,7 +42,9 @@ export class TicketTypeRepository {
       row.validity_code === ValidityType.ADVANCE,
       row.reservation_required !== ReservationType.NotRequired,
       row.tkt_class === Class.First,
-      row.discount_category
+      row.discount_category,
+      LocalDate.parse(row.start_date),
+      LocalDate.parse(row.end_date)
     );
   }
 }
@@ -66,6 +67,8 @@ interface TicketTypeRow {
   validity_code: ValidityCode;
   reservation_required: ReservationType;
   discount_category: DiscountCategory;
+  start_date: string;
+  end_date: string;
 }
 
 enum Direction {

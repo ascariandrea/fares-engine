@@ -21,6 +21,7 @@ import {calendarRestrictionFilter} from "../fare/filter/CalendarRestrictionFilte
 import {farePreferencesFilter} from "../fare/filter/FarePreferencesFilter";
 import {AdvancePurchaseRepository} from "../tickettype/repository/AdvancePurchaseRepository";
 import {advancePurchaseFilter} from "../fare/filter/AdvancePurchaseFilter";
+import {ticketTypeDateFilter} from "../fare/filter/TicketTypeDateFilter";
 
 export class Container {
 
@@ -61,7 +62,8 @@ export class Container {
       railcardBanFilter,
       calendarRestrictionFilter(calendarRestrictions),
       farePreferencesFilter,
-      advancePurchaseFilter(apData)
+      advancePurchaseFilter(apData),
+      ticketTypeDateFilter
     ]);
 
     return new KoaService(
