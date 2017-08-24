@@ -3,7 +3,7 @@ import {Status} from "../../src/passenger/Status";
 import {PassengerSet} from "../../src/passenger/PassengerSet";
 import {dicRailcard, disRailcard, publicRailcard, yngRailcard} from "../passenger/Railcard.spec";
 import {CheapestFareOptionFactory} from "../../src/fare/CheapestFareOptionFactory";
-import {createFare} from "./FareMockUtils";
+import {advanceTicketType, createFare, route} from "./FareMockUtils";
 
 describe("CheapestFareOptionFactory", () => {
 
@@ -16,7 +16,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(1, 0, [publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(1);
     chai.expect(option.get.fares[0].adults).to.equal(1);
@@ -33,7 +33,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(0, 1, [publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(1);
     chai.expect(option.get.fares[0].adults).to.equal(0);
@@ -50,7 +50,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(2, 2, [publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(4);
 
@@ -80,7 +80,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(2, 2, [yngRailcard, publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(4);
 
@@ -110,7 +110,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(2, 2, [yngRailcard, yngRailcard, yngRailcard, publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(4);
 
@@ -140,7 +140,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(2, 2, [disRailcard, publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(4);
 
@@ -170,7 +170,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(2, 2, [disRailcard, publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(4);
 
@@ -200,7 +200,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(2, 2, [disRailcard, publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(4);
 
@@ -230,7 +230,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(2, 0, [dicRailcard, publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(2);
 
@@ -252,7 +252,7 @@ describe("CheapestFareOptionFactory", () => {
     ];
 
     const passengerSet = new PassengerSet(1, 1, [disRailcard, publicRailcard]);
-    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {});
 
     chai.expect(option.get.fares.length).to.equal(2);
 
@@ -265,5 +265,68 @@ describe("CheapestFareOptionFactory", () => {
     chai.expect(option.get.fares[1].fare).to.deep.equal(createFare(1000, Status.CHILD_STATUS_CODE));
   });
 
+  it("only uses available fares", () => {
+    const fares = [
+      createFare(1500, Status.ADULT_STATUS_CODE, publicRailcard, route, advanceTicketType),
+      createFare(2000)
+    ];
 
+    const passengerSet = new PassengerSet(1, 0, [publicRailcard]);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {
+      "2CC": 0
+    });
+
+    chai.expect(option.get.fares.length).to.equal(1);
+    chai.expect(option.get.fares[0].adults).to.equal(1);
+    chai.expect(option.get.fares[0].children).to.equal(0);
+    chai.expect(option.get.fares[0].fare).to.deep.equal(createFare(2000));
+  });
+
+  it("splits passengers over multiple fare types depending on availability", () => {
+    const fares = [
+      createFare(1500, Status.ADULT_STATUS_CODE, publicRailcard, route, advanceTicketType),
+      createFare(2000)
+    ];
+
+    const passengerSet = new PassengerSet(2, 0, [publicRailcard]);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {
+      "2CC": 1
+    });
+
+    chai.expect(option.get.fares.length).to.equal(2);
+    chai.expect(option.get.fares[0].adults).to.equal(1);
+    chai.expect(option.get.fares[0].children).to.equal(0);
+    chai.expect(option.get.fares[0].fare.ticketType.code).to.equal("2CC");
+    chai.expect(option.get.fares[1].adults).to.equal(1);
+    chai.expect(option.get.fares[1].children).to.equal(0);
+    chai.expect(option.get.fares[1].fare.ticketType.code).to.equal("SOR");
+  });
+
+  it("shares availability of ticket types between adults and children", () => {
+    const fares = [
+      createFare(1500, Status.ADULT_STATUS_CODE, publicRailcard, route, advanceTicketType),
+      createFare(1500, Status.CHILD_STATUS_CODE, publicRailcard, route, advanceTicketType),
+      createFare(2000),
+      createFare(2000, Status.CHILD_STATUS_CODE)
+    ];
+
+    const passengerSet = new PassengerSet(2, 2, [publicRailcard]);
+    const option = CheapestFareOptionFactory.getFareOption(fares, passengerSet, {
+      "2CC": 2
+    });
+
+    chai.expect(option.get.fares.length).to.equal(4);
+    chai.expect(option.get.fares[0].adults).to.equal(1);
+    chai.expect(option.get.fares[0].children).to.equal(0);
+    chai.expect(option.get.fares[0].fare.ticketType.code).to.equal("2CC");
+    chai.expect(option.get.fares[1].adults).to.equal(1);
+    chai.expect(option.get.fares[1].children).to.equal(0);
+    chai.expect(option.get.fares[1].fare.ticketType.code).to.equal("2CC");
+    chai.expect(option.get.fares[2].adults).to.equal(0);
+    chai.expect(option.get.fares[2].children).to.equal(1);
+    chai.expect(option.get.fares[2].fare.ticketType.code).to.equal("SOR");
+    chai.expect(option.get.fares[3].adults).to.equal(0);
+    chai.expect(option.get.fares[3].children).to.equal(1);
+    chai.expect(option.get.fares[3].fare.ticketType.code).to.equal("SOR");
+  });
 });

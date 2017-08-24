@@ -32,7 +32,6 @@ export class FareUse {
   constructor(
     public readonly adults: number,
     public readonly children: number,
-    public readonly railcard: Railcard,
     public readonly fare: Fare
   ) { }
 
