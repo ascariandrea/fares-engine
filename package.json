@@ -32,6 +32,7 @@
   "homepage": "https://github.com/open-track/fares-engine#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "dtd2mysql": "^3.1.2",
     "js-joda": "^1.5.5",
     "koa": "^2.3.0",
     "koa-compress": "^2.0.0",
