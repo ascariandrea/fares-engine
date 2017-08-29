@@ -13,11 +13,22 @@ It does not test the validity of journeys as it has no concept of a journey. The
 npm test
 ```
 
-## Run
+## Setup
+
+It is assumed that MySQL is installed locally and there is a database called `fares` set up. The database credentials can be overriden by setting environment variables `DATABASE_USERNAME`, `DATABASE_PASSWORD`, `DATABASE_HOST` `DATABASE_NAME`.
+
+If you have a username and password for DTD you can set the credentials with `SFTP_USERNAME` and `SFTP_PASSWORD`, you can also override the host with `SFTP_HOSTNAME`.
 
 ```
-npm run data-import /path/to/RJFAFxxx.ZIP #first run only
+SFTP_USERNAME=dtd_username SFTP_PASSWORD=dtd_password npm run data-download
 npm run data-clean 
+```
+
+## Run
+
+Starting the service will load some data into memory (~30 seconds) and then start the service on port 8002. Browsing `http://localhost:8002` will display the test user interface.
+
+```
 npm start
 ```
 

@@ -1,6 +1,6 @@
 {
   "name": "gb-rail-fares",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Library, API and user interface for calculating British rail fares",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -9,6 +9,7 @@
     "gtest": "mocha --compilers ts:ts-node/register,tsx:ts-node/register 'test/**/*.spec.ts' --grep",
     "watch-test": "mocha -w --compilers ts:ts-node/register,tsx:ts-node/register 'test/**/*.spec.ts'",
     "start": "ts-node ./src/start.ts",
+    "data-download": "DATABASE_NAME=fares dtd2mysql --get-fares",
     "data-import": "DATABASE_NAME=fares dtd2mysql --fares",
     "data-clean": "DATABASE_NAME=fares dtd2mysql --fares-clean",
     "prepublishOnly": "tsc -p ./ --outDir dist/"
@@ -31,7 +32,7 @@
   "homepage": "https://github.com/open-track/fares-engine#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
-    "js-joda": "^1.5.4",
+    "js-joda": "^1.5.5",
     "koa": "^2.3.0",
     "koa-compress": "^2.0.0",
     "koa-static": "^4.0.1",
@@ -45,14 +46,14 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.8",
-    "@types/chai": "^4.0.3",
-    "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.22",
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.0.25",
     "@types/sinon": "^2.3.3",
     "chai": "^4.1.1",
     "mocha": "^3.5.0",
-    "sinon": "^3.2.0",
+    "sinon": "^3.2.1",
     "ts-node": "^3.1.0",
-    "typescript": "^2.4.1"
+    "typescript": "^2.5.1"
   }
 }
